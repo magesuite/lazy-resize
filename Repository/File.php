@@ -48,7 +48,7 @@ class File implements Image
         $targetDirectory = $this->normalizePath(dirname($path));
 
         if (!file_exists($targetDirectory)) {
-            mkdir($targetDirectory, 0777, true);
+            @mkdir($targetDirectory, 0777, true);
         }
 
         file_put_contents($path, (string)$data);
