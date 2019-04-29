@@ -7,31 +7,31 @@ class Resize
     const PLACEHOLDER_LOCATION = '/media/placeholders/%s.png';
     
     /**
-     * @var \MageSuite\LazyResize\Service\TokenGenerator
+     * @var \MageSuite\LazyResize\Service\TokenGenerator $tokenGenerator
      */
     private $tokenGenerator;
     /**
-     * @var \MageSuite\LazyResize\Service\UrlParser
+     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrl
      */
-    private $urlParser;
+    private $imageUrl;
     /**
-     * @var \MageSuite\LazyResize\Service\ImageProcessor
+     * @var \MageSuite\LazyResize\Service\ImageProcessor $imageProcessor
      */
     private $imageProcessor;
 
     public function __construct(
         \MageSuite\LazyResize\Service\TokenGenerator $tokenGenerator,
-        \MageSuite\LazyResize\Service\UrlParser $urlParser,
+        \MageSuite\LazyResize\Service\ImageUrl $imageUrl,
         \MageSuite\LazyResize\Service\ImageProcessor $imageProcessor
     )
     {
         $this->tokenGenerator = $tokenGenerator;
-        $this->urlParser = $urlParser;
+        $this->imageUrl = $imageUrl;
         $this->imageProcessor = $imageProcessor;
     }
 
     public function execute($requestUri) {
-        $configuration = $this->urlParser->parseUrl($requestUri);
+        $configuration = $this->imageUrl->parseUrl();
 
         if ($configuration['token'] != $this->tokenGenerator->generate($configuration)) {
             return new \Symfony\Component\HttpFoundation\Response(
@@ -47,7 +47,7 @@ class Resize
                 $this->imageProcessor->optimize($configuration);
             }
 
-            $resizedFilePath = $this->imageProcessor->save($requestUri);
+            $resizedFilePath = $this->imageProcessor->save(str_replace('/media/', '', $requestUri));
 
             return new \Symfony\Component\HttpFoundation\Response(
                 $this->imageProcessor->returnToBrowser($resizedFilePath),

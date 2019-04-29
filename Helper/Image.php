@@ -25,7 +25,7 @@ class Image extends \Magento\Catalog\Helper\Image
 
     public function getUrlBuilder()
     {
-        return new \MageSuite\LazyResize\Service\UrlBuilder(new \MageSuite\LazyResize\Service\TokenGenerator());
+        return new \MageSuite\LazyResize\Service\ImageUrl();
     }
 
     public function getUrl()
@@ -36,7 +36,7 @@ class Image extends \Magento\Catalog\Helper\Image
             return $this->getPlaceholderUrl();
         }
 
-        return $this->mediaBaseUrl . $this->getUrlBuilder()->buildUrl($attributes);
+        return $this->mediaBaseUrl . $this->getUrlBuilder()->generateUrl($attributes);
     }
     
     public function getResizedImageInfo()
