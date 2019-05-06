@@ -21,7 +21,7 @@ class ImageUrl
      */
     private $parts = [
         'type' => '[a-z_]+',
-        'width_and_height' => '([0-9]{2,4})x([0-9]{2,4})',
+        'width_and_height' => '([0-9]{1,4})x([0-9]{1,4})',
         'boolean_flags' => '[0|1]{3}',
         'optimization_level' => '[0-9]{1,3}',
         'token' => '[a-z0-9]{32}',
