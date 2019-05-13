@@ -2,8 +2,6 @@
 
 namespace MageSuite\LazyResize\Service;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 class ImageUrl
 {
     /**
@@ -64,8 +62,10 @@ class ImageUrl
         try {
            $urlParts = $matcher->match($url);
         } catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $exception) {
-            header("HTTP/1.0 404 Not Found");
-            die();
+            return new \Symfony\Component\HttpFoundation\Response(
+                '',
+                404
+            );
         }
 
         $urlParts += $this->parseWidthAndHeight($urlParts['width_and_height']);
