@@ -2,7 +2,7 @@
 
 namespace MageSuite\LazyResize\Service;
 
-class ImageUrl
+class ImageUrlHandler
 {
     /**
      * @var string $url

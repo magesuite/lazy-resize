@@ -18,13 +18,13 @@ class ResizeApplication {
     {
         $request = Request::createFromGlobals();
 
-        $imageUrl = new \MageSuite\LazyResize\Service\ImageUrl();
+        $imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
 
         $parameters = $imageUrl->parseUrl();
 
         $controller = new \MageSuite\LazyResize\Controller\Resize(
             new \MageSuite\LazyResize\Service\TokenGenerator(),
-            $imageUrl,
+            $imageUrlHandler,
             new \MageSuite\LazyResize\Service\ImageProcessor(
                 new \MageSuite\LazyResize\Repository\File(),
                 new \MageSuite\Frontend\Service\Image\CommandLine\Optimizer(

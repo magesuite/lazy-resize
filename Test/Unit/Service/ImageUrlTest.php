@@ -5,16 +5,16 @@ namespace MageSuite\LazyResize\Test\Unit\Service;
 class ImageUrlTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrl
+     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrlHandler
      */
-    protected $imageUrl;
+    protected $imageUrlHandler;
 
     public function setUp() {
-        $this->imageUrl = new \MageSuite\LazyResize\Service\ImageUrl();
+        $this->imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 
     public function testItGeneratesProperUrlBasedOnConfiguration() {
-        $result = $this->imageUrl->generateUrl([
+        $result = $this->imageUrlHandler->generateUrl([
             'type' => 'small_image',
             'width' => 500,
             'height' => 0,
@@ -30,7 +30,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
 
     public function testItParsesUrlProperly()
     {
-        $result = $this->imageUrl->matchUrl('/media/catalog/product/thumbnail/b5531dfad8d6aa194efeeb269fdb7c58/small_image/500x0/100/80/m/a/magento.jpg');
+        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/b5531dfad8d6aa194efeeb269fdb7c58/small_image/500x0/100/80/m/a/magento.jpg');
 
         $this->assertEquals(
             [

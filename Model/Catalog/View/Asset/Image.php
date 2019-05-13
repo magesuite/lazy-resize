@@ -193,6 +193,6 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
     public function getUrlBuilder()
     {
-        return new \MageSuite\LazyResize\Service\ImageUrl();
+        return new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 }

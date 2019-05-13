@@ -11,9 +11,9 @@ class Resize
      */
     private $tokenGenerator;
     /**
-     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrl
+     * @var \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler
      */
-    private $imageUrl;
+    private $imageUrlHandler;
     /**
      * @var \MageSuite\LazyResize\Service\ImageProcessor $imageProcessor
      */
@@ -21,17 +21,17 @@ class Resize
 
     public function __construct(
         \MageSuite\LazyResize\Service\TokenGenerator $tokenGenerator,
-        \MageSuite\LazyResize\Service\ImageUrl $imageUrl,
+        \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler,
         \MageSuite\LazyResize\Service\ImageProcessor $imageProcessor
     )
     {
         $this->tokenGenerator = $tokenGenerator;
-        $this->imageUrl = $imageUrl;
+        $this->imageUrlHandler = $imageUrlHandler;
         $this->imageProcessor = $imageProcessor;
     }
 
     public function execute($requestUri) {
-        $configuration = $this->imageUrl->parseUrl();
+        $configuration = $this->imageUrlHandler->parseUrl();
 
         if ($configuration['token'] != $this->tokenGenerator->generate($configuration)) {
             return new \Symfony\Component\HttpFoundation\Response(

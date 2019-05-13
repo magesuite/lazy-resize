@@ -25,7 +25,7 @@ class Image extends \Magento\Catalog\Helper\Image
 
     public function getUrlBuilder()
     {
-        return new \MageSuite\LazyResize\Service\ImageUrl();
+        return new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 
     public function getUrl()
