@@ -2,12 +2,7 @@
 
 namespace MageSuite\LazyResize\Service;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ImageUrl
 {
@@ -31,37 +26,47 @@ class ImageUrl
     ];
 
     /**
-     * @var RouteCollection $routes
+     * @var \Symfony\Component\Routing\RouteCollection $routes
      */
     private $routes;
 
     /**
-     * @var RequestContext $requestContext
+     * @var \Symfony\Component\Routing\RequestContext $requestContext
      */
     private $requestContext;
 
     public function __construct()
     {
-        $route = new Route(
+        $route = new \Symfony\Component\Routing\Route(
             $this->url,
             [],
             $this->parts
         );
 
-        $routes = new RouteCollection();
+        $routes = new \Symfony\Component\Routing\RouteCollection();
         $routes->add('resize', $route);
         $this->routes = $routes;
 
-        $context = new RequestContext();
-        $context->fromRequest(Request::createFromGlobals());
+        $context = new \Symfony\Component\Routing\RequestContext();
+        $context->fromRequest(\Symfony\Component\HttpFoundation\Request::createFromGlobals());
         $this->requestContext = $context;
     }
 
     public function parseUrl()
     {
-        $matcher = new UrlMatcher($this->routes, $this->requestContext);
+        $this->matchUrl($this->requestContext->getPathInfo());
+    }
 
-        $urlParts = $matcher->match($this->requestContext->getPathInfo());
+    public function matchUrl($url)
+    {
+        $matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($this->routes, $this->requestContext);
+
+        try {
+           $urlParts = $matcher->match($url);
+        } catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $exception) {
+            header("HTTP/1.0 404 Not Found");
+            die();
+        }
 
         $urlParts += $this->parseWidthAndHeight($urlParts['width_and_height']);
         $urlParts += $this->parseBooleanFlags($urlParts['boolean_flags']);
@@ -96,7 +101,7 @@ class ImageUrl
             ARRAY_FILTER_USE_KEY
         );
 
-        $generator = new UrlGenerator($this->routes, $this->requestContext);
+        $generator = new \Symfony\Component\Routing\Generator\UrlGenerator($this->routes, $this->requestContext);
 
         return str_replace('/media/', '', $generator->generate('resize', $configuration));
     }
