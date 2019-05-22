@@ -169,7 +169,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     {
         $attributes = $this->getAttributes();
 
-        return $this->getUrlBuilder()->buildUrl($attributes);
+        return $this->getUrlBuilder()->generateUrl($attributes);
     }
 
     protected function getAttributes()
@@ -193,6 +193,6 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
     public function getUrlBuilder()
     {
-        return new \MageSuite\LazyResize\Service\UrlBuilder(new \MageSuite\LazyResize\Service\TokenGenerator());
+        return new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 }

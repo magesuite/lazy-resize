@@ -10,11 +10,6 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
     protected $controller;
 
     /**
-     * @var \MageSuite\LazyResize\Service\UrlParser|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $urlParserDouble;
-
-    /**
      * @var \MageSuite\LazyResize\Service\ImageProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $imageProcessorDouble;
@@ -29,27 +24,32 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageOptimizerDouble;
 
+    /**
+     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrlHandlerDouble
+     */
+    protected $imageUrlHandlerDouble;
+
     public function setUp()
     {
         $this->tokenGeneratorDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\TokenGenerator::class)->getMock();
-        $this->urlParserDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\UrlParser::class)->getMock();
         $this->imageProcessorDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\ImageProcessor::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->imageUrlHandlerDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\ImageUrlHandler::class)->getMock();
 
         $this->imageOptimizerDouble = $this->getMockBuilder(\MageSuite\Frontend\Service\Image\Optimizer::class)->getMock();
 
         $this->controller = new \MageSuite\LazyResize\Controller\Resize(
             $this->tokenGeneratorDouble,
-            $this->urlParserDouble,
-            $this->imageProcessorDouble,
-            $this->imageOptimizerDouble
+            $this->imageUrlHandlerDouble,
+            $this->imageProcessorDouble
         );
     }
 
     public function testItReturns404WhenTokenDoesNotMatch()
     {
-        $this->urlParserDouble->method('parseUrl')->willReturn(['token' => 'returned_token']);
+        $this->imageUrlHandlerDouble->method('parseUrl')->willReturn(['token' => 'returned_token']);
         $this->tokenGeneratorDouble->method('generate')->willReturn('not_matching_token');
 
         $result = $this->controller->execute('catalog/product/thumbnail/l/o/logo.png');
@@ -60,7 +60,7 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
 
     public function testItRedirectsToPlaceholderWhenOriginalImageDoesNotExist()
     {
-        $this->urlParserDouble->method('parseUrl')->willReturn(['token' => 'matching_token', 'type' => 'small_image']);
+        $this->imageUrlHandlerDouble->method('parseUrl')->willReturn(['token' => 'matching_token', 'type' => 'small_image']);
         $this->tokenGeneratorDouble->method('generate')->willReturn('matching_token');
         $this->imageProcessorDouble->method('process')->willThrowException(
             new \MageSuite\LazyResize\Exception\OriginalImageNotFound()
@@ -77,7 +77,7 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
         $returnedConfiguration = ['token' => 'matching_token'];
         $requestUri = 'catalog/product/thumbnail/l/o/logo.png';
 
-        $this->urlParserDouble->method('parseUrl')->willReturn($returnedConfiguration);
+        $this->imageUrlHandlerDouble->method('parseUrl')->willReturn($returnedConfiguration);
         $this->tokenGeneratorDouble->method('generate')->willReturn('matching_token');
 
         $this->imageProcessorDouble->expects($this->once())->method('process')->with($returnedConfiguration);
@@ -91,7 +91,7 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
         $returnedConfiguration = ['token' => 'matching_token'];
         $requestUri = 'catalog/product/thumbnail/l/o/logo.png';
 
-        $this->urlParserDouble->method('parseUrl')->willReturn($returnedConfiguration);
+        $this->imageUrlHandlerDouble->method('parseUrl')->willReturn($returnedConfiguration);
         $this->tokenGeneratorDouble->method('generate')->willReturn('matching_token');
 
         $this->imageProcessorDouble->method('returnToBrowser')->willReturn('returned_content');
