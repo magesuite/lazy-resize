@@ -46,6 +46,11 @@ class ImageUrlHandler
         $this->routes = $routes;
 
         $context = new \Symfony\Component\Routing\RequestContext();
+        /**
+         * There's no need to have uploaded files data only for ULRs generation and mathing.
+         * But without this Magento is throwing errors when tests with file upload are running
+         */
+        $_FILES = [];
         $context->fromRequest(\Symfony\Component\HttpFoundation\Request::createFromGlobals());
         $this->requestContext = $context;
     }
