@@ -20,7 +20,7 @@ class ResizeApplication {
 
         $imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
 
-        $parameters = $imageUrl->parseUrl();
+        $parameters = $imageUrlHandler->parseUrl();
 
         $controller = new \MageSuite\LazyResize\Controller\Resize(
             new \MageSuite\LazyResize\Service\TokenGenerator(),
