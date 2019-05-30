@@ -57,7 +57,7 @@ class ImageUrlHandler
 
     public function parseUrl()
     {
-        $this->matchUrl($this->requestContext->getPathInfo());
+        return $this->matchUrl($this->requestContext->getPathInfo());
     }
 
     public function matchUrl($url)
