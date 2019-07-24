@@ -4,6 +4,8 @@ namespace MageSuite\LazyResize\Helper;
 
 class Image extends \Magento\Catalog\Helper\Image
 {
+    const NOT_SELECTED_IMAGE = 'no_selection';
+
     protected $mediaBaseUrl;
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
@@ -32,7 +34,7 @@ class Image extends \Magento\Catalog\Helper\Image
     {
         $attributes = $this->getAttributes();
 
-        if ($attributes['image_file'] == null) {
+        if ($attributes['image_file'] == null || $attributes['image_file'] == self::NOT_SELECTED_IMAGE) {
             return $this->getPlaceholderUrl();
         }
 
