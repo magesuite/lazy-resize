@@ -48,6 +48,8 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
      */
     protected $scopeConfig;
 
+    protected $urlBuilder = null;
+
     /**
      * Image constructor.
      * @param \Magento\Catalog\Model\Product\Media\ConfigInterface $mediaConfig
@@ -105,7 +107,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
      */
     public function getPath()
     {
-        return $this->context->getPath() . DIRECTORY_SEPARATOR . $this->getImageInfo();
+        return $this->getContext()->getPath() . DIRECTORY_SEPARATOR . str_replace('catalog/product/', '', $this->getImageInfo());
     }
 
     /**
@@ -165,7 +167,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
      *
      * @return string
      */
-    protected function getImageInfo()
+    public function getImageInfo()
     {
         $attributes = $this->getAttributes();
 
@@ -193,6 +195,17 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
     public function getUrlBuilder()
     {
+        if($this->urlBuilder){
+            return $this->urlBuilder;
+        }
+
         return new \MageSuite\LazyResize\Service\UrlBuilder(new \MageSuite\LazyResize\Service\TokenGenerator());
+    }
+
+    public function setUrlBuilder($urlBuilder)
+    {
+        $this->urlBuilder = $urlBuilder;
+
+        return $this;
     }
 }
