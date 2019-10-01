@@ -22,7 +22,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
 
         $this->imageProcessor = new \MageSuite\LazyResize\Service\ImageProcessor(
             $this->imageRepository,
-            new \MageSuite\Frontend\Service\Image\CommandLine\Optimizer(
+            new \MageSuite\ImageOptimization\Service\Image\CommandLine\Optimizer(
                 new \ImageOptimizer\OptimizerFactory([
                     'jpegoptim_options' => ['--max=80'],
                     'execute_only_first_jpeg_optimizer' => false,

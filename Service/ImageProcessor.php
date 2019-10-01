@@ -12,14 +12,9 @@ class ImageProcessor
      */
     private $imageRepository;
 
-    /**
-     * @var \MageSuite\Frontend\Service\Image\Optimizer
-     */
-    private $imageOptimizer;
-
     public function __construct(
         \MageSuite\LazyResize\Repository\Image $imageRepository,
-        \MageSuite\Frontend\Service\Image\Optimizer $imageOptimizer
+        \MageSuite\ImageOptimization\Service\Image\Optimizer $imageOptimizer
     )
     {
         $this->imageRepository = $imageRepository;

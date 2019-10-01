@@ -27,7 +27,7 @@ class ResizeApplication {
             $imageUrlHandler,
             new \MageSuite\LazyResize\Service\ImageProcessor(
                 new \MageSuite\LazyResize\Repository\File(),
-                new \MageSuite\Frontend\Service\Image\CommandLine\Optimizer(
+                new \MageSuite\ImageOptimization\Service\Image\CommandLine\Optimizer(
                     new \ImageOptimizer\OptimizerFactory([
                         'jpegoptim_options' => ['--max=' . $parameters['optimization_level']],
                         'execute_only_first_jpeg_optimizer' => false,
