@@ -11,17 +11,26 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
     protected $imageProcessor;
 
     /**
-     * @var \MageSuite\LazyResize\Repository\Image
+     * @var \MageSuite\ImageResize\Repository\ImageInterface
      */
     protected $imageRepository;
 
-    public function setUp() {
-        $this->imageRepository = new \MageSuite\LazyResize\Repository\File();
+    /**
+     * @var \MageSuite\ImageResize\Service\Image\Resize
+     */
+    protected $imageResize;
 
+    public function setUp()
+    {
+        $this->imageRepository = new \MageSuite\ImageResize\Repository\File();
         $this->imageRepository->setMediaDirectoryPath($this->assetsDirectoryPath);
 
+        $this->imageResize = new \MageSuite\ImageResize\Service\Image\Resize(
+            $this->imageRepository
+        );
+
         $this->imageProcessor = new \MageSuite\LazyResize\Service\ImageProcessor(
-            $this->imageRepository,
+            $this->imageResize,
             new \MageSuite\ImageOptimization\Service\Image\CommandLine\Optimizer(
                 new \ImageOptimizer\OptimizerFactory([
                     'jpegoptim_options' => ['--max=80'],
@@ -40,7 +49,8 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         $this->cleanUpProcessedImagesDirectory();
     }
 
-    public function testItResizesImageProperly() {
+    public function testItResizesImageProperly()
+    {
         $configuration['image_file'] = '/l/o/logo.png';
         $configuration['width'] = '200';
         $configuration['height'] = '100';
@@ -84,7 +94,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
 
     public function deleteDirectory($dir)
     {
-        $files = array_diff(scandir($dir), array('.', '..'));
+        $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->deleteDirectory("$dir/$file") : unlink("$dir/$file");
         }
@@ -157,5 +167,4 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
             $this->deleteDirectory($this->assetsDirectoryPath . '/l');
         }
     }
-
 }

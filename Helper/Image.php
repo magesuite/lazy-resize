@@ -6,11 +6,12 @@ class Image extends \Magento\Catalog\Helper\Image
 {
     const NOT_SELECTED_IMAGE = 'no_selection';
 
-    protected $mediaBaseUrl;
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
-    private $storeManager;
+    protected $storeManager;
+
+    protected $mediaBaseUrl;
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -40,7 +41,7 @@ class Image extends \Magento\Catalog\Helper\Image
 
         return $this->mediaBaseUrl . $this->getUrlBuilder()->generateUrl($attributes);
     }
-    
+
     public function getResizedImageInfo()
     {
         return [
@@ -84,9 +85,9 @@ class Image extends \Magento\Catalog\Helper\Image
             return $this->_assetRepo->getUrl("Magento_Catalog::images/product/placeholder/{$destinationSubDir}.jpg");
         }
 
-        return $this->mediaBaseUrl .  'catalog/product/placeholder/' . $placeholderPathFromConfig;
+        return $this->mediaBaseUrl . 'catalog/product/placeholder/' . $placeholderPathFromConfig;
     }
-    
+
     protected function applyScheduledActions()
     {
         return $this;

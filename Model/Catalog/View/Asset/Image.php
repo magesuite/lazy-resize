@@ -13,7 +13,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
      * @var string
      */
     protected $mediaBaseUrl;
-    
+
     /**
      * Image type of image (thumbnail,small_image,image,swatch_image,swatch_thumb)
      *
@@ -175,7 +175,6 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     protected function getAttributes()
     {
         $imageFile= $this->getFilePath();
-
 
         return [
             'image_file' => $imageFile,

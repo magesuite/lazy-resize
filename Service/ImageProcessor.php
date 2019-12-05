@@ -4,20 +4,21 @@ namespace MageSuite\LazyResize\Service;
 
 class ImageProcessor
 {
-    const BACKGROUD_WHITE = 'white';
-    const BACKGROUD_TRANSPARENT = 'transparent';
+    /**
+     * @var \MageSuite\ImageResize\Service\Image\Resize
+     */
+    protected $imageResize;
 
     /**
-     * @var \MageSuite\LazyResize\Repository\Image
+     * @var \MageSuite\ImageOptimization\Service\Image\Optimizer
      */
-    private $imageRepository;
+    protected $imageOptimizer;
 
     public function __construct(
-        \MageSuite\LazyResize\Repository\Image $imageRepository,
+        \MageSuite\ImageResize\Service\Image\Resize $imageResize,
         \MageSuite\ImageOptimization\Service\Image\Optimizer $imageOptimizer
-    )
-    {
-        $this->imageRepository = $imageRepository;
+    ) {
+        $this->imageResize = $imageResize;
         $this->imageOptimizer = $imageOptimizer;
     }
 
@@ -35,35 +36,7 @@ class ImageProcessor
     {
         $this->configuration = $configuration;
 
-        $imageContents = $this->imageRepository->getOriginalImage($configuration['image_file']);
-
-        $this->image = new \Imagick();
-
-        $this->image->readImageBlob($imageContents);
-
-        $backgroundColor = ImageProcessor::BACKGROUD_WHITE;
-
-        if ($this->getMimeType() === 'image/png') {
-            $backgroundColor = ImageProcessor::BACKGROUD_TRANSPARENT;
-        }
-
-        $background = new \Imagick();
-        $background->newImage($configuration['width'], $configuration['height'], $backgroundColor);
-
-        $this->image->scaleImage($configuration['width'], $configuration['height'], true);
-
-        $w = $this->image->getImageWidth();
-        $h = $this->image->getImageHeight();
-
-        $background->compositeImage(
-            $this->image,
-            \Imagick::COMPOSITE_DEFAULT,
-            -($w - $configuration['width']) / 2,
-            -($h - $configuration['height']) / 2
-        );
-
-        $background->setFilename($configuration['image_file']);
-        $this->image = $background;
+        $this->image = $this->imageResize->resize($configuration);
     }
 
     public function getMimeType()
@@ -76,10 +49,11 @@ class ImageProcessor
         if (empty($fileName)) {
             return $this->image;
         }
+
         $contents = @file_get_contents($fileName);
 
-        if($contents === false) {
-            throw new \MageSuite\LazyResize\Exception\OriginalImageNotFound();
+        if ($contents === false) {
+            throw new \MageSuite\ImageResize\Exception\OriginalImageNotFound();
         }
 
         return $contents;
@@ -87,15 +61,17 @@ class ImageProcessor
 
     public function save($requestUri)
     {
-        return $this->imageRepository->save($requestUri, (string)$this->image);
+        return $this->imageResize->save($requestUri, $this->image);
     }
 
     public function open($fileName)
     {
         $imageContents = @file_get_contents($fileName);
-        if($imageContents === false) {
-            throw new \MageSuite\LazyResize\Exception\OriginalImageNotFound();
+
+        if ($imageContents === false) {
+            throw new \MageSuite\ImageResize\Exception\OriginalImageNotFound();
         }
+
         $this->image = new \Imagick();
         $this->image->readImageBlob($imageContents);
     }

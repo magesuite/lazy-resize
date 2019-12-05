@@ -5,32 +5,34 @@ namespace MageSuite\LazyResize\Controller;
 class Resize
 {
     const PLACEHOLDER_LOCATION = '/media/placeholders/%s.png';
-    
+
     /**
      * @var \MageSuite\LazyResize\Service\TokenGenerator $tokenGenerator
      */
-    private $tokenGenerator;
+    protected $tokenGenerator;
+
     /**
      * @var \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler
      */
-    private $imageUrlHandler;
+    protected $imageUrlHandler;
+
     /**
      * @var \MageSuite\LazyResize\Service\ImageProcessor $imageProcessor
      */
-    private $imageProcessor;
+    protected $imageProcessor;
 
     public function __construct(
         \MageSuite\LazyResize\Service\TokenGenerator $tokenGenerator,
         \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler,
         \MageSuite\LazyResize\Service\ImageProcessor $imageProcessor
-    )
-    {
+    ) {
         $this->tokenGenerator = $tokenGenerator;
         $this->imageUrlHandler = $imageUrlHandler;
         $this->imageProcessor = $imageProcessor;
     }
 
-    public function execute($requestUri) {
+    public function execute($requestUri)
+    {
         $configuration = $this->imageUrlHandler->parseUrl();
 
         if ($configuration['token'] != $this->tokenGenerator->generate($configuration)) {
@@ -54,8 +56,7 @@ class Resize
                 200,
                 ['Content-Type' => $this->imageProcessor->getMimeType()]
             );
-        }
-        catch(\MageSuite\LazyResize\Exception\OriginalImageNotFound $exception) {
+        } catch (\MageSuite\ImageResize\Exception\OriginalImageNotFound $exception) {
             return new \Symfony\Component\HttpFoundation\RedirectResponse(
                 sprintf(self::PLACEHOLDER_LOCATION, $configuration['type'])
             );

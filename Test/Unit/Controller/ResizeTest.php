@@ -63,7 +63,7 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
         $this->imageUrlHandlerDouble->method('parseUrl')->willReturn(['token' => 'matching_token', 'type' => 'small_image']);
         $this->tokenGeneratorDouble->method('generate')->willReturn('matching_token');
         $this->imageProcessorDouble->method('process')->willThrowException(
-            new \MageSuite\LazyResize\Exception\OriginalImageNotFound()
+            new \MageSuite\ImageResize\Exception\OriginalImageNotFound()
         );
 
         $result = $this->controller->execute('catalog/product/thumbnail/l/o/logo.png');
