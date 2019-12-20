@@ -52,10 +52,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
                 'miscParams' => self::MISC_PARAMS
             ]
         );
-        $pathParts = explode('/', $image->getPath());
 
-        $this->assertContains(sprintf('/pub/media/catalog/product/' . self::CORRECT_IMAGE_PATH, $pathParts[15]), $image->getPath());
-
+        $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
+        $this->assertContains('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
     }
 
     public function testItReturnImagePathCorrectlyWithWrongDirectory()
@@ -70,8 +69,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $pathParts = explode('/', $image->getPath());
-        $this->assertContains(sprintf('/pub/media/' . self::WRONG_IMAGE_PATH, $pathParts[15]), $image->getPath());
+        $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
+        $this->assertContains('image/400x300/110/80/l/o/logo_wrong.png', $image->getPath());
 
     }
 }
