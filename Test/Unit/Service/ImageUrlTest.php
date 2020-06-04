@@ -18,6 +18,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'type' => 'small_image',
             'width' => 500,
             'height' => 0,
+            'file_size' => 300,
             'aspect_ratio' => true,
             'transparency' => false,
             'enable_optimization' => false,
@@ -25,18 +26,19 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/e61c9e15e184913133a02c261fe6435d/small_image/500x0/100/80/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/e61c9e15e184913133a02c261fe6435d/small_image/500x0/300/100/80/m/a/magento.jpg', $result);
     }
 
     public function testItParsesUrlProperly()
     {
-        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/b5531dfad8d6aa194efeeb269fdb7c58/small_image/500x0/100/80/m/a/magento.jpg');
+        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/b5531dfad8d6aa194efeeb269fdb7c58/small_image/500x0/400/100/80/m/a/magento.jpg');
 
         $this->assertEquals(
             [
                 'type' => 'small_image',
                 'width' => 500,
                 'height' => 0,
+                'file_size' => 400,
                 'aspect_ratio' => true,
                 'transparency' => false,
                 'enable_optimization' => false,

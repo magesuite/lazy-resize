@@ -1,0 +1,58 @@
+<?php
+
+namespace MageSuite\LazyResize\Test\Integration\Model\Catalog\View\Asset;
+
+class ImageTest extends \PHPUnit\Framework\TestCase
+{
+    /**
+     * @var \Magento\TestFramework\ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
+     * @var \Magento\Catalog\Block\Product\ImageBuilder
+     */
+    protected $imageBuilder;
+
+    public function setUp() {
+        $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
+        $this->imageBuilder = $this->objectManager->get(\Magento\Catalog\Block\Product\ImageBuilder::class);
+        $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     */
+    public function testItReturnsProperUrlWhenImageIsDefined() {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+
+        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/240x300/1234/110/80/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @param $product
+     * @return string
+     */
+    protected function getImageUrl($product)
+    {
+        return $this->imageBuilder->create($product, 'category_page_grid', [])
+            ->getImageUrl();
+    }
+
+    public static function setFileSize() {
+        require __DIR__.'/../../../../_files/file_size.php';
+    }
+}

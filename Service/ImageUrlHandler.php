@@ -7,7 +7,7 @@ class ImageUrlHandler
     /**
      * @var string $url
      */
-    private $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    private $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{file_size}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
 
     /**
      * @var array $parts
@@ -17,6 +17,7 @@ class ImageUrlHandler
         'width_and_height' => '([0-9]{1,4})x([0-9]{1,4})',
         'boolean_flags' => '[0|1]{3}',
         'optimization_level' => '[0-9]{1,3}',
+        'file_size' => '[0-9]{1,12}',
         'token' => '[a-z0-9]{32}',
         'first_letter' => '[^/]',
         'second_letter' => '[^/]',
@@ -83,6 +84,10 @@ class ImageUrlHandler
     public function generateUrl($configuration)
     {
         $tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator();
+
+        if(!isset($configuration['file_size'])) {
+            $configuration['file_size'] = 0;
+        }
 
         $configuration['width_and_height'] = $this->buildWidthAndHeight($configuration);
         $configuration['boolean_flags'] = $this->buildBooleanFlags($configuration);

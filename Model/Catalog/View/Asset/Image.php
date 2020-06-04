@@ -51,6 +51,11 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     protected $urlBuilder = null;
 
     /**
+     * @var \MageSuite\LazyResize\Model\FileSizeRepository
+     */
+    protected $fileSizeRepository;
+
+    /**
      * Image constructor.
      * @param \Magento\Catalog\Model\Product\Media\ConfigInterface $mediaConfig
      * @param \Magento\Framework\View\Asset\ContextInterface $context
@@ -65,6 +70,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         \Magento\Framework\View\Asset\ContextInterface $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository,
         $filePath,
         array $miscParams
     ) {
@@ -82,6 +88,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
         $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
         $this->scopeConfig = $scopeConfig;
+        $this->fileSizeRepository = $fileSizeRepository;
     }
 
     /**
@@ -176,10 +183,11 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
     protected function getAttributes()
     {
-        $imageFile= $this->getFilePath();
+        $imageFile = $this->getFilePath();
 
         return [
             'image_file' => $imageFile,
+            'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
             'type' => $this->getContentType(),
             'width' => $this->miscParams['image_width'],
             'height' => $this->miscParams['image_height'],

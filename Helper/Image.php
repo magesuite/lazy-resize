@@ -13,16 +13,23 @@ class Image extends \Magento\Catalog\Helper\Image
 
     protected $mediaBaseUrl;
 
+    /**
+     * @var \MageSuite\LazyResize\Model\FileSizeRepository
+     */
+    protected $fileSizeRepository;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Catalog\Model\Product\ImageFactory $productImageFactory,
         \Magento\Framework\View\Asset\Repository $assetRepo,
         \Magento\Framework\View\ConfigInterface $viewConfig,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository
     ) {
         parent::__construct($context, $productImageFactory, $assetRepo, $viewConfig);
 
         $this->storeManager = $storeManager;
+        $this->fileSizeRepository = $fileSizeRepository;
         $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
 
@@ -63,6 +70,7 @@ class Image extends \Magento\Catalog\Helper\Image
             'type' => $this->getType(),
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
+            'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
             'frame' => $this->getFrame(),
             'aspect_ratio' => $this->getAttribute('aspect_ratio'),
             'transparency' => $this->getAttribute('transparency'),
