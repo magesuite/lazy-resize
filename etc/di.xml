@@ -18,4 +18,10 @@
         <plugin sortOrder="1" name="mageSuiteLazyResizeReadHandler"
                 type="MageSuite\LazyResize\Plugin\Catalog\Model\Product\Gallery\ReadHandler\GatherFileSizesFromMediaEntries"/>
     </type>
+
+    <preference for="MageSuite\LazyResize\Api\FileSizeRepositoryInterface"
+                type="MageSuite\LazyResize\Model\FileSizeRepository" />
+
+    <preference for="MageSuite\LazyResize\Api\Data\ImageFileSizeInterface"
+                type="MageSuite\LazyResize\Model\Data\ImageFileSize" />
 </config>

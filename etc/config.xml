@@ -11,6 +11,9 @@
             <images_optimization>
                 <enable_optimization>0</enable_optimization>
             </images_optimization>
+            <url_generation>
+                <include_image_file_size_in_url>0</include_image_file_size_in_url>
+            </url_generation>
         </images>
     </default>
 </config>

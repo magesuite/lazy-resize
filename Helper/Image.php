@@ -71,6 +71,7 @@ class Image extends \Magento\Catalog\Helper\Image
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
             'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
+            'include_image_file_size_in_url' => (boolean)$this->scopeConfig->getValue('images/url_generation/include_image_file_size_in_url'),
             'frame' => $this->getFrame(),
             'aspect_ratio' => $this->getAttribute('aspect_ratio'),
             'transparency' => $this->getAttribute('transparency'),

@@ -31,17 +31,34 @@ class AddFileSizeForImage
 
         $filePath = $data['value'];
 
+        $data['file_size'] = $this->getFileSize($filePath);
+
+        return [$data];
+    }
+
+    public function beforeSaveDataRow(\Magento\Catalog\Model\ResourceModel\Product\Gallery $subject, $table, array $data, array $fields = [])
+    {
+        if(!isset($data['value'])) {
+            return [$table, $data, $fields];
+        }
+
+        $filePath = $data['value'];
+
+        $data['file_size'] = $this->getFileSize($filePath);
+
+        return [$table, $data, $fields];
+    }
+
+    public function getFileSize($filePath)
+    {
         try {
             $mediaDir = $this->fileSystem->getDirectoryRead(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
             $mediaPath = $this->mediaConfig->getMediaPath($filePath);
             $fileHandler = $mediaDir->stat($mediaPath);
 
-            $data['file_size'] = $fileHandler['size'];
+            return $fileHandler['size'];
+        } catch (\Magento\Framework\Exception\FileSystemException $e) {
+            return 0;
         }
-        catch(\Magento\Framework\Exception\FileSystemException $e) {
-
-        }
-
-        return [$data];
     }
 }

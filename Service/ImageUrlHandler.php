@@ -7,7 +7,8 @@ class ImageUrlHandler
     /**
      * @var string $url
      */
-    private $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{file_size}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    private $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    private $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
 
     /**
      * @var array $parts
@@ -36,14 +37,24 @@ class ImageUrlHandler
 
     public function __construct()
     {
+        $routes = new \Symfony\Component\Routing\RouteCollection();
+
         $route = new \Symfony\Component\Routing\Route(
             $this->url,
             [],
             $this->parts
         );
 
-        $routes = new \Symfony\Component\Routing\RouteCollection();
         $routes->add('resize', $route);
+
+        $route = new \Symfony\Component\Routing\Route(
+            $this->urlWithFileSize,
+            [],
+            $this->parts
+        );
+
+        $routes->add('resize_with_file_size', $route);
+
         $this->routes = $routes;
 
         $context = new \Symfony\Component\Routing\RequestContext();
@@ -85,9 +96,17 @@ class ImageUrlHandler
     {
         $tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator();
 
-        if(!isset($configuration['file_size'])) {
+        $includeFileSizeInUrl = $configuration['include_image_file_size_in_url'] ?? false;
+
+        if($includeFileSizeInUrl && !isset($configuration['file_size'])) {
             $configuration['file_size'] = 0;
         }
+
+        if(!$includeFileSizeInUrl && isset($configuration['file_size']) ) {
+            unset($configuration['file_size']);
+        }
+
+        $routeIdentifier = $includeFileSizeInUrl ? 'resize_with_file_size' : 'resize';
 
         $configuration['width_and_height'] = $this->buildWidthAndHeight($configuration);
         $configuration['boolean_flags'] = $this->buildBooleanFlags($configuration);
@@ -113,7 +132,7 @@ class ImageUrlHandler
 
         $generator = new \Symfony\Component\Routing\Generator\UrlGenerator($this->routes, $this->requestContext);
 
-        return str_replace('/media/', '', $generator->generate('resize', $configuration));
+        return str_replace('/media/', '', $generator->generate($routeIdentifier, $configuration));
     }
 
     protected function parseWidthAndHeight($widthAndHeight) {

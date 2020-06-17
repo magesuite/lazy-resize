@@ -185,9 +185,10 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     {
         $imageFile = $this->getFilePath();
 
-        return [
+        $attributes = [
             'image_file' => $imageFile,
             'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
+            'include_image_file_size_in_url' => (boolean)$this->scopeConfig->getValue('images/url_generation/include_image_file_size_in_url'),
             'type' => $this->getContentType(),
             'width' => $this->miscParams['image_width'],
             'height' => $this->miscParams['image_height'],
@@ -198,6 +199,8 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
             'background' => $this->miscParams['background'],
             'optimization_level' => $this->scopeConfig->getValue('dev/images_optimization/images_optimization_level')
         ];
+
+        return $attributes;
     }
 
     public function getUrlBuilder()

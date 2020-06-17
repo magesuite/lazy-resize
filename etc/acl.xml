@@ -10,6 +10,9 @@
                         </resource>
                     </resource>
                 </resource>
+                <resource id="MageSuite_LazyResize::api" title="Lazy resize API" sortOrder="800">
+                    <resource id="MageSuite_LazyResize::add_file_size" title="Update images file sizes" sortOrder="200" />
+                </resource>
             </resource>
         </resources>
     </acl>

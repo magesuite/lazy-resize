@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\LazyResize\Test\Unit\Model\Catalog\View\Asset;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
@@ -36,7 +37,13 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     protected $fileSizeRepository;
 
-    public function setUp() {
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $scopeConfigStub;
+
+    public function setUp()
+    {
         /** @var \Magento\Framework\App\ObjectManager objectManager */
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
@@ -46,14 +53,16 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['generateUrl'])
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->scopeConfigStub = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function testItReturnImagePathCorrectlyWithCorrectDirectory()
     {
         $this->urlBuilder->method('generateUrl')
             ->willReturn(self::CORRECT_IMAGE_PATH);
-
-        $this->fileSizeRepository->addFileSize('l/o/logo_correct.png', 3000);
 
         $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
             [
@@ -63,7 +72,30 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-        $this->assertContains('image/400x300/3000/110/80/l/o/logo_correct.png', $image->getPath());
+        $this->assertContains('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
+    }
+
+    public function testItReturnImagePathCorrectlyWithCorrectDirectoryAndFileSize()
+    {
+        $this->urlBuilder->method('generateUrl')
+            ->willReturn(self::CORRECT_IMAGE_PATH);
+
+        $this->fileSizeRepository->addFileSize('l/o/logo_correct.png', 3000);
+
+        $this->generateReturnValueMapForScopeConfig(1);
+
+        $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
+            [
+                'filePath' => 'l/o/logo_correct.png',
+                'miscParams' => self::MISC_PARAMS,
+                'scopeConfig' => $this->scopeConfigStub
+            ]
+        );
+
+        $path = $image->getPath();
+
+        $this->assertContains('/pub/media/catalog/product/thumbnail', $path);
+        $this->assertContains('image/3000/400x300/110/80/l/o/logo_correct.png', $path);
     }
 
     public function testItReturnImagePathCorrectlyWithWrongDirectory()
@@ -81,7 +113,35 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-        $this->assertContains('image/400x300/4000/110/80/l/o/logo_wrong.png', $image->getPath());
+        $this->assertContains('image/400x300/110/80/l/o/logo_wrong.png', $image->getPath());
 
+    }
+
+    public function testItReturnImagePathCorrectlyWithWrongDirectoryAndFileSize()
+    {
+        $this->urlBuilder->method('generateUrl')
+            ->willReturn(self::WRONG_IMAGE_PATH);
+
+        $this->fileSizeRepository->addFileSize('l/o/logo_wrong.png', 4000);
+        $this->generateReturnValueMapForScopeConfig(1);
+
+        $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
+            [
+                'filePath' => 'l/o/logo_wrong.png',
+                'miscParams' => self::MISC_PARAMS,
+                'scopeConfig' => $this->scopeConfigStub
+            ]
+        );
+
+        $path = $image->getPath();
+
+        $this->assertContains('/pub/media/catalog/product/thumbnail', $path);
+        $this->assertContains('image/4000/400x300/110/80/l/o/logo_wrong.png', $path);
+    }
+
+    protected function generateReturnValueMapForScopeConfig($includeImageFileSizeInUrl)
+    {
+        return $this->scopeConfigStub->method('getValue')
+            ->will($this->onConsecutiveCalls($includeImageFileSizeInUrl, 0, 80));
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/images/file_size" method="POST">
+        <service class="MageSuite\LazyResize\Api\FileSizeRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="MageSuite_LazyResize::add_file_size" />
+        </resources>
+    </route>
+</routes>
