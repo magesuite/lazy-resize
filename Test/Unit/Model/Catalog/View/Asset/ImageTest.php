@@ -4,8 +4,10 @@ namespace MageSuite\LazyResize\Test\Unit\Model\Catalog\View\Asset;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
+    const ENABLE_OPTIMIZATION = 0;
+    const OPTIMIZATION_LEVEL = 80;
+    
     const CORRECT_IMAGE_PATH = 'thumbnail/%s/image/400x300/110/80/l/o/logo_correct.png';
-
     const WRONG_IMAGE_PATH = 'catalog/product/thumbnail/%s/image/400x300/110/80/l/o/logo_wrong.png';
 
     const MISC_PARAMS = [
@@ -142,6 +144,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     protected function generateReturnValueMapForScopeConfig($includeImageFileSizeInUrl)
     {
         return $this->scopeConfigStub->method('getValue')
-            ->will($this->onConsecutiveCalls($includeImageFileSizeInUrl, 0, 80));
+            ->will($this->onConsecutiveCalls($includeImageFileSizeInUrl, self::ENABLE_OPTIMIZATION, self::OPTIMIZATION_LEVEL));
     }
 }
