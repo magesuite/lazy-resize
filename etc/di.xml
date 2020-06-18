@@ -7,4 +7,25 @@
 
     <preference for="Magento\Catalog\Model\View\Asset\Image"
                 type="MageSuite\LazyResize\Model\Catalog\View\Asset\Image" />
+
+    <type name="Magento\Catalog\Model\ResourceModel\Product\Gallery">
+        <plugin name="add_file_size_column_to_sql_query"
+                type="MageSuite\LazyResize\Plugin\Catalog\Model\ResourceModel\Product\Gallery\AddFileSizeColumnToSqlQuery"
+                sortOrder="10"
+        />
+        <plugin name="add_file_size_for_uploaded_image"
+                type="MageSuite\LazyResize\Plugin\Catalog\Model\ResourceModel\Product\Gallery\AddFileSizeForUploadedImage"
+                sortOrder="20"
+        />
+    </type>
+    <type name="Magento\Catalog\Model\Product\Gallery\ReadHandler">
+        <plugin sortOrder="10" name="gather_file_sizes_from_media_entries"
+                type="MageSuite\LazyResize\Plugin\Catalog\Model\Product\Gallery\ReadHandler\GatherFileSizesFromMediaEntries"/>
+    </type>
+
+    <preference for="MageSuite\LazyResize\Api\FileSizeRepositoryInterface"
+                type="MageSuite\LazyResize\Model\FileSizeRepository" />
+
+    <preference for="MageSuite\LazyResize\Api\Data\ImageFileSizeInterface"
+                type="MageSuite\LazyResize\Model\Data\ImageFileSize" />
 </config>

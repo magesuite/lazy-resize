@@ -30,6 +30,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenImageIsDefined() {
         $product = $this->productRepository->get('simple');
@@ -45,8 +46,27 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoConfigFixture default/images/url_generation/include_image_file_size_in_url 1
+     * @magentoDataFixture setFileSize
+     */
+    public function testItReturnsProperUrlWithFileSizeWhenImageIsDefined() {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+
+        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/1234/240x300/000/80/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
      * @magentoConfigFixture default/dev/images_optimization/images_optimization_level 60
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
      */
     public function testIfImageUrlHaveChangedOptimizationLevelParam()
     {
@@ -63,8 +83,29 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
+     * @magentoConfigFixture default/images/url_generation/include_image_file_size_in_url 1
+     * @magentoConfigFixture default/dev/images_optimization/images_optimization_level 60
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     */
+    public function testIfImageUrlHaveChangedOptimizationLevelParamAndFileSize()
+    {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+
+        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/de8d74deccd33278c499dbcf695ec235/small_image/1234/240x300/000/60/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
      * @magentoConfigFixture default/images/images_optimization/enable_optimization 1
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
      */
     public function testIfImageUrlHaveEnabledImageOptimization()
     {
@@ -73,6 +114,26 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
 
         $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/92a6ebf6462b719fcc9c781e7697e4ca/small_image/240x300/001/80/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture default/images/url_generation/include_image_file_size_in_url 1
+     * @magentoConfigFixture default/images/images_optimization/enable_optimization 1
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     */
+    public function testIfImageUrlHaveEnabledImageOptimizationAndFileSize()
+    {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+
+        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/92a6ebf6462b719fcc9c781e7697e4ca/small_image/1234/240x300/001/80/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -124,5 +185,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageHelper->init($product, 'category_page_grid', []);
 
         return $this->imageHelper->getUrl();
+    }
+
+    public static function setFileSize() {
+        require __DIR__.'/../_files/file_size.php';
     }
 }
