@@ -56,6 +56,11 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     protected $fileSizeRepository;
 
     /**
+     * @var \MageSuite\LazyResize\Helper\Configuration
+     */
+    protected $configuration;
+
+    /**
      * Image constructor.
      * @param \Magento\Catalog\Model\Product\Media\ConfigInterface $mediaConfig
      * @param \Magento\Framework\View\Asset\ContextInterface $context
@@ -69,8 +74,8 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         \Magento\Catalog\Model\Product\Media\ConfigInterface $mediaConfig,
         \Magento\Framework\View\Asset\ContextInterface $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository,
+        \MageSuite\LazyResize\Helper\Configuration $configuration,
         $filePath,
         array $miscParams
     ) {
@@ -87,8 +92,8 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         $this->storeManager = $storeManager;
 
         $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
-        $this->scopeConfig = $scopeConfig;
         $this->fileSizeRepository = $fileSizeRepository;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -185,22 +190,20 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     {
         $imageFile = $this->getFilePath();
 
-        $attributes = [
+        return [
             'image_file' => $imageFile,
             'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
-            'include_image_file_size_in_url' => (boolean)$this->scopeConfig->getValue('images/url_generation/include_image_file_size_in_url'),
+            'include_image_file_size_in_url' => $this->configuration->shouldIncludeImageFileSizeInUrl(),
             'type' => $this->getContentType(),
             'width' => $this->miscParams['image_width'],
             'height' => $this->miscParams['image_height'],
             'frame' => $this->miscParams['keep_frame'],
             'aspect_ratio' => $this->miscParams['keep_aspect_ratio'],
             'transparency' => $this->miscParams['keep_transparency'],
-            'enable_optimization' => (boolean) $this->scopeConfig->getValue('images/images_optimization/enable_optimization'),
+            'enable_optimization' => $this->configuration->isOptimizationEnabled(),
             'background' => $this->miscParams['background'],
-            'optimization_level' => $this->scopeConfig->getValue('dev/images_optimization/images_optimization_level')
+            'optimization_level' => $this->configuration->getOptimizationLevel()
         ];
-
-        return $attributes;
     }
 
     public function getUrlBuilder()

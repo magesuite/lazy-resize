@@ -6,7 +6,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 {
     const ENABLE_OPTIMIZATION = 0;
     const OPTIMIZATION_LEVEL = 80;
-    
+
     const CORRECT_IMAGE_PATH = 'thumbnail/%s/image/400x300/110/80/l/o/logo_correct.png';
     const WRONG_IMAGE_PATH = 'catalog/product/thumbnail/%s/image/400x300/110/80/l/o/logo_wrong.png';
 
@@ -42,7 +42,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject
      */
-    protected $scopeConfigStub;
+    protected $configurationStub;
+
 
     public function setUp()
     {
@@ -56,7 +57,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->scopeConfigStub = $this->getMockBuilder(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+        $this->configurationStub = $this->getMockBuilder(\MageSuite\LazyResize\Helper\Configuration::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
@@ -90,7 +91,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             [
                 'filePath' => 'l/o/logo_correct.png',
                 'miscParams' => self::MISC_PARAMS,
-                'scopeConfig' => $this->scopeConfigStub
+                'configuration' => $this->configurationStub
             ]
         );
 
@@ -131,7 +132,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             [
                 'filePath' => 'l/o/logo_wrong.png',
                 'miscParams' => self::MISC_PARAMS,
-                'scopeConfig' => $this->scopeConfigStub
+                'configuration' => $this->configurationStub
             ]
         );
 
@@ -143,7 +144,16 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
     protected function generateReturnValueMapForScopeConfig($includeImageFileSizeInUrl)
     {
-        return $this->scopeConfigStub->method('getValue')
-            ->will($this->onConsecutiveCalls($includeImageFileSizeInUrl, self::ENABLE_OPTIMIZATION, self::OPTIMIZATION_LEVEL));
+        $this->configurationStub
+            ->method('shouldIncludeImageFileSizeInUrl')
+            ->willReturn($includeImageFileSizeInUrl);
+
+        $this->configurationStub
+            ->method('isOptimizationEnabled')
+            ->willReturn(self::ENABLE_OPTIMIZATION);
+
+        $this->configurationStub
+            ->method('getOptimizationLevel')
+            ->willReturn(self::OPTIMIZATION_LEVEL);
     }
 }

@@ -6,17 +6,22 @@ class Image extends \Magento\Catalog\Helper\Image
 {
     const NOT_SELECTED_IMAGE = 'no_selection';
 
+    protected $mediaBaseUrl;
+
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
 
-    protected $mediaBaseUrl;
-
     /**
      * @var \MageSuite\LazyResize\Model\FileSizeRepository
      */
     protected $fileSizeRepository;
+
+    /**
+     * @var Configuration
+     */
+    protected $configuration;
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -24,13 +29,15 @@ class Image extends \Magento\Catalog\Helper\Image
         \Magento\Framework\View\Asset\Repository $assetRepo,
         \Magento\Framework\View\ConfigInterface $viewConfig,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository
+        \MageSuite\LazyResize\Api\FileSizeRepositoryInterface $fileSizeRepository,
+        \MageSuite\LazyResize\Helper\Configuration $configuration
     ) {
         parent::__construct($context, $productImageFactory, $assetRepo, $viewConfig);
 
         $this->storeManager = $storeManager;
         $this->fileSizeRepository = $fileSizeRepository;
         $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+        $this->configuration = $configuration;
     }
 
     public function getUrlBuilder()
@@ -71,13 +78,13 @@ class Image extends \Magento\Catalog\Helper\Image
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
             'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
-            'include_image_file_size_in_url' => (boolean)$this->scopeConfig->getValue('images/url_generation/include_image_file_size_in_url'),
+            'include_image_file_size_in_url' => $this->configuration->shouldIncludeImageFileSizeInUrl(),
             'frame' => $this->getFrame(),
             'aspect_ratio' => $this->getAttribute('aspect_ratio'),
             'transparency' => $this->getAttribute('transparency'),
-            'enable_optimization' => (boolean) $this->scopeConfig->getValue('images/images_optimization/enable_optimization'),
+            'enable_optimization' => $this->configuration->isOptimizationEnabled(),
             'background' => $this->getAttribute('background'),
-            'optimization_level' => $this->scopeConfig->getValue('dev/images_optimization/images_optimization_level')
+            'optimization_level' => $this->configuration->getOptimizationLevel()
         ];
     }
 

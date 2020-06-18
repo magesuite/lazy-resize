@@ -7,13 +7,13 @@ class ImageUrlHandler
     /**
      * @var string $url
      */
-    private $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
-    private $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    protected $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    protected $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
 
     /**
      * @var array $parts
      */
-    private $parts = [
+    protected $parts = [
         'type' => '[a-z_]+',
         'width_and_height' => '([0-9]{1,4})x([0-9]{1,4})',
         'boolean_flags' => '[0|1]{3}',
@@ -28,12 +28,12 @@ class ImageUrlHandler
     /**
      * @var \Symfony\Component\Routing\RouteCollection $routes
      */
-    private $routes;
+    protected $routes;
 
     /**
      * @var \Symfony\Component\Routing\RequestContext $requestContext
      */
-    private $requestContext;
+    protected $requestContext;
 
     public function __construct()
     {

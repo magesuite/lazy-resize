@@ -2,7 +2,7 @@
 
 namespace MageSuite\LazyResize\Plugin\Catalog\Model\ResourceModel\Product\Gallery;
 
-class AddFileSizeForImage
+class AddFileSizeForUploadedImage
 {
     /**
      * @var \Magento\Framework\Filesystem
@@ -29,9 +29,7 @@ class AddFileSizeForImage
             return [$data];
         }
 
-        $filePath = $data['value'];
-
-        $data['file_size'] = $this->getFileSize($filePath);
+        $data['file_size'] = $this->getFileSize($data['value']);
 
         return [$data];
     }
@@ -42,9 +40,7 @@ class AddFileSizeForImage
             return [$table, $data, $fields];
         }
 
-        $filePath = $data['value'];
-
-        $data['file_size'] = $this->getFileSize($filePath);
+        $data['file_size'] = $this->getFileSize($data['value']);
 
         return [$table, $data, $fields];
     }

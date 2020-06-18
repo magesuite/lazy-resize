@@ -4,19 +4,20 @@ namespace MageSuite\LazyResize\Model;
 
 class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepositoryInterface
 {
-    const FOLDER_DELIMITER = '/';
-
     /**
      * @var \Magento\Framework\DB\Adapter\AdapterInterface
      */
     protected $connection = null;
 
+    /**
+     * @var int[]
+     */
+    protected $fileSizes = [];
+
     public function __construct(\Magento\Framework\App\ResourceConnection $resourceConnection)
     {
         $this->connection = $resourceConnection->getConnection();
     }
-
-    protected $fileSizes = [];
 
     public function addFileSize($filePath, $fileSize)
     {
@@ -28,21 +29,33 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
         return $this->fileSizes[$filePath] ?? 0;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function save($fileSizes)
     {
         $tableName = $this->connection->getTableName('catalog_product_entity_media_gallery');
 
-        foreach ($fileSizes as $fileSize) {
-            $path = self::FOLDER_DELIMITER . ltrim($fileSize->getPath(), self::FOLDER_DELIMITER);
+        $paths = [];
+        $conditions = [];
 
-            $this->connection->update(
-                $tableName,
-                ['file_size' => $fileSize->getSize()],
-                ['value = ?' => $path]
-            );
+        foreach ($fileSizes as $fileSize) {
+            $path = DIRECTORY_SEPARATOR . ltrim($fileSize->getPath(), DIRECTORY_SEPARATOR);
+
+            $case = $this->connection->quoteInto('?', $path);
+            $result = $this->connection->quoteInto('?', $fileSize->getSize());
+
+            $paths[] = $path;
+            $conditions[$case] = $result;
+        }
+
+        $value = $this->connection->getCaseSql('value', $conditions, 'file_size');
+        $where = ['value IN (?)' => $paths];
+
+        try {
+            $this->connection->beginTransaction();
+            $this->connection->update($tableName, ['file_size' => $value], $where);
+            $this->connection->commit();
+
+        } catch(\Exception $e) {
+            $this->connection->rollBack();
         }
 
         return $fileSizes;
