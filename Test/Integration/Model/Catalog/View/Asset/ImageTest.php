@@ -69,6 +69,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenRequestedFromIndexPhp() {
+        // Below globals are set to emulate scenario where base url contains index.php
+        // because request is created based on globals \MageSuite\LazyResize\Service\ImageUrlHandler::66
         $_SERVER['ORIGINAL_URI'] = '/index.php';
         $_SERVER['REQUEST_URI'] = '/index.php';
 
