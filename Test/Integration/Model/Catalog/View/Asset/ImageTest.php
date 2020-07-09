@@ -60,6 +60,26 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedUrl, $url);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture current_store web/url/redirect_to_base 0
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     */
+    public function testItReturnsProperUrlWhenRequestedFromIndexPhp() {
+        $_SERVER['ORIGINAL_URI'] = '/index.php';
+        $_SERVER['REQUEST_URI'] = '/index.php';
+
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+
+        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/240x300/110/80/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
 
     /**
      * @param $product
