@@ -132,7 +132,7 @@ class ImageUrlHandler
 
         $generator = new \Symfony\Component\Routing\Generator\UrlGenerator($this->routes, $this->requestContext);
 
-        return str_replace('/media/', '', $generator->generate($routeIdentifier, $configuration));
+        return preg_replace('/(\/index.php)?\/media\//i', '', $generator->generate($routeIdentifier, $configuration));
     }
 
     protected function parseWidthAndHeight($widthAndHeight) {
