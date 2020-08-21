@@ -9,7 +9,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageUrlHandler;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 

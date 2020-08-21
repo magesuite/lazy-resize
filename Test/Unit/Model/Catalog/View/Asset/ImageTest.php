@@ -45,7 +45,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     protected $configurationStub;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         /** @var \Magento\Framework\App\ObjectManager objectManager */
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
@@ -74,8 +74,13 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-        $this->assertContains('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
+        if(method_exists($this, 'assertStringContainsString')) {
+            $this->assertStringContainsString('/pub/media/catalog/product/thumbnail', $image->getPath());
+            $this->assertStringContainsString('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
+        } else {
+            $this->asssertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
+            $this->asssertContains('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
+        }
     }
 
     public function testItReturnImagePathCorrectlyWithCorrectDirectoryAndFileSize()
@@ -97,8 +102,14 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $path = $image->getPath();
 
-        $this->assertContains('/pub/media/catalog/product/thumbnail', $path);
-        $this->assertContains('image/3000/400x300/110/80/l/o/logo_correct.png', $path);
+        if(method_exists($this, 'assertStringContainsString')) {
+            $this->assertStringContainsString('/pub/media/catalog/product/thumbnail', $path);
+            $this->assertStringContainsString('image/3000/400x300/110/80/l/o/logo_correct.png', $path);
+        }
+        else {
+            $this->assertContains('/pub/media/catalog/product/thumbnail', $path);
+            $this->assertContains('image/3000/400x300/110/80/l/o/logo_correct.png', $path);
+        }
     }
 
     public function testItReturnImagePathCorrectlyWithWrongDirectory()
@@ -115,9 +126,14 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-        $this->assertContains('image/400x300/110/80/l/o/logo_wrong.png', $image->getPath());
-
+        if(method_exists($this, 'assertStringContainsString')) {
+            $this->assertStringContainsString('/pub/media/catalog/product/thumbnail', $image->getPath());
+            $this->assertStringContainsString('image/400x300/110/80/l/o/logo_wrong.png', $image->getPath());
+        }
+        else {
+            $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
+            $this->assertContains('image/400x300/110/80/l/o/logo_wrong.png', $image->getPath());
+        }
     }
 
     public function testItReturnImagePathCorrectlyWithWrongDirectoryAndFileSize()
@@ -138,8 +154,14 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $path = $image->getPath();
 
-        $this->assertContains('/pub/media/catalog/product/thumbnail', $path);
-        $this->assertContains('image/4000/400x300/110/80/l/o/logo_wrong.png', $path);
+        if(method_exists($this, 'assertStringContainsString')) {
+            $this->assertStringContainsString('/pub/media/catalog/product/thumbnail', $path);
+            $this->assertStringContainsString('image/4000/400x300/110/80/l/o/logo_wrong.png', $path);
+        }
+        else {
+            $this->assertContains('/pub/media/catalog/product/thumbnail', $path);
+            $this->assertContains('image/4000/400x300/110/80/l/o/logo_wrong.png', $path);
+        }
     }
 
     protected function generateReturnValueMapForScopeConfig($includeImageFileSizeInUrl)
