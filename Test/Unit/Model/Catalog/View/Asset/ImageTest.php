@@ -78,8 +78,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             $this->assertStringContainsString('/pub/media/catalog/product/thumbnail', $image->getPath());
             $this->assertStringContainsString('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
         } else {
-            $this->asssertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-            $this->asssertContains('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
+            $this->assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
+            $this->assertContains('image/400x300/110/80/l/o/logo_correct.png', $image->getPath());
         }
     }
 
