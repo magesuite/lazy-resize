@@ -151,7 +151,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $expectedUrl = $this->prepareRegexUrl('http://localhost/pub/static/version([0-9]+?)/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/small_image.jpg');
 
-        $this->assertRegExp($expectedUrl, $url);
+        $assertRegExp = method_exists($this, 'assertMatchesRegularExpression') ? 'assertMatchesRegularExpression' : 'assertRegExp';
+
+        $this->$assertRegExp($expectedUrl, $url);
     }
 
     /**
