@@ -9,7 +9,7 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
      */
     protected $tokenGenerator;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator();
     }
 

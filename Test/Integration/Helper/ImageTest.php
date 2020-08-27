@@ -19,7 +19,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageHelper;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
@@ -151,7 +151,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $expectedUrl = $this->prepareRegexUrl('http://localhost/pub/static/version([0-9]+?)/frontend/Magento/luma/en_US/Magento_Catalog/images/product/placeholder/small_image.jpg');
 
-        $this->assertRegExp($expectedUrl, $url);
+        $assertRegExp = method_exists($this, 'assertMatchesRegularExpression') ? 'assertMatchesRegularExpression' : 'assertRegExp';
+
+        $this->$assertRegExp($expectedUrl, $url);
     }
 
     /**

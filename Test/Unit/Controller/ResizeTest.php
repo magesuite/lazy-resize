@@ -29,7 +29,7 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageUrlHandlerDouble;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->tokenGeneratorDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\TokenGenerator::class)->getMock();
         $this->imageProcessorDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\ImageProcessor::class)

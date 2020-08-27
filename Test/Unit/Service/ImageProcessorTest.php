@@ -20,7 +20,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageResize;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->imageRepository = new \MageSuite\ImageResize\Repository\File();
         $this->imageRepository->setMediaDirectoryPath($this->assetsDirectoryPath);
@@ -43,7 +43,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         $this->cleanUpThumbnailsDirectory();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpThumbnailsDirectory();
         $this->cleanUpProcessedImagesDirectory();
