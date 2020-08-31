@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- Fix for sitemap -->
+<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/view.xsd">
+    <media>
+        <images module="Magento_Catalog">
+            <image id="product_page_image_large" type="image">
+                <width>1000</width>
+                <height>1000</height>
+            </image>
+        </images>
+    </media>
+</view>
