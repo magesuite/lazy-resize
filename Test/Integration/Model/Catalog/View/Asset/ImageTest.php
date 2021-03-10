@@ -19,7 +19,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageBuilder;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->imageBuilder = $this->objectManager->get(\Magento\Catalog\Block\Product\ImageBuilder::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
@@ -32,12 +33,14 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
-    public function testItReturnsProperUrlWhenImageIsDefined() {
+    public function testItReturnsProperUrlWhenImageIsDefined()
+    {
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/240x300/110/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/240x300/110/80/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -50,12 +53,14 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
-    public function testItReturnsProperUrlWhenImageAndFileSizeIsDefined() {
+    public function testItReturnsProperUrlWhenImageAndFileSizeIsDefined()
+    {
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/1234/240x300/110/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/1234/240x300/110/80/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -68,7 +73,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
-    public function testItReturnsProperUrlWhenRequestedFromIndexPhp() {
+    public function testItReturnsProperUrlWhenRequestedFromIndexPhp()
+    {
         // Below globals are set to emulate scenario where base url contains index.php
         // because request is created based on globals \MageSuite\LazyResize\Service\ImageUrlHandler::66
         $_SERVER['ORIGINAL_URI'] = '/index.php';
@@ -77,8 +83,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/pub/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/240x300/110/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/68772abcfa9e93123560380b62a68bcb/image/240x300/110/80/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -89,11 +96,11 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     protected function getImageUrl($product)
     {
-        return $this->imageBuilder->create($product, 'category_page_grid', [])
-            ->getImageUrl();
+        return $this->imageBuilder->create($product, 'category_page_grid', [])->getImageUrl();
     }
 
-    public static function setFileSize() {
-        require __DIR__.'/../../../../_files/file_size.php';
+    public static function setFileSize()
+    {
+        require __DIR__ . '/../../../../_files/file_size.php';
     }
 }
