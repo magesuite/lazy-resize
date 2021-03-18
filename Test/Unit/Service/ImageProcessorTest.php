@@ -116,11 +116,17 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         $this->imageProcessor->optimize($configuration);
         $this->imageProcessor->save($fileName);
         $optimizedFileSize = filesize($processedFileName);
+        $imagickVersion = \Imagick::getVersion();
 
         /**
-         * This file after optmimization is bigger than original, because it keeps transparency
+         * Since version 1629 handling PNG images with a transparent background has been improved.
+         * The output image has a lower file size than the original file.
          */
-        $this->assertGreaterThan($originalFileSize, $optimizedFileSize);
+        if (version_compare($imagickVersion['versionNumber'], '1692', '<')) {
+            $this->assertGreaterThan($originalFileSize, $optimizedFileSize);
+        } else {
+            $this->assertLessThan($originalFileSize, $optimizedFileSize);
+        }
     }
 
     public function testIfOptimizePngImageWithoutTransparencyProperly()
