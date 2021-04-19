@@ -22,6 +22,10 @@ class ResizeApplication
         $imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
 
         $parameters = $imageUrlHandler->parseUrl();
+        if($parameters instanceof \Symfony\Component\HttpFoundation\Response && $parameters->isNotFound()) {
+            header('HTTP/1.0 404 Not Found');
+            exit;
+        }
 
         $controller = new \MageSuite\LazyResize\Controller\Resize(
             new \MageSuite\LazyResize\Service\TokenGenerator(),
