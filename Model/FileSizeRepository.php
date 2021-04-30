@@ -35,7 +35,18 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
 
     public function getFileSize($filePath)
     {
-        return $this->fileSizes[$filePath] ?? 0;
+        if(!isset($this->fileSizes[$filePath])) {
+            $tableName = $this->connection->getTableName('catalog_product_entity_media_gallery');
+            $select = $this->connection->select()
+                ->from($tableName, 'file_size')
+                ->where("`value` = :file_path")
+                ->where('file_size > 0');
+            $bind = ['file_path' => $filePath];
+            $fileSize = (int) $this->connection->fetchOne($select, $bind);
+            $this->fileSizes[$filePath] = $fileSize;
+        }
+
+        return $this->fileSizes[$filePath];
     }
 
     public function save($fileSizes)
