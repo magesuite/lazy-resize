@@ -15,6 +15,11 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     protected $productRepository;
 
     /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
+     */
+    private $productCollectionFactory;
+
+    /**
      * @var \MageSuite\LazyResize\Helper\Image
      */
     protected $imageHelper;
@@ -24,6 +29,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+        $this->productCollectionFactory = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
     }
 
     /**
@@ -42,6 +48,31 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
 
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     */
+    public function testItReturnsProperUrlWhenImageIsDefinedOnProductFromCollection()
+    {
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
+
+        /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
+        $collection = $this->productCollectionFactory->create();
+        $product = $collection->addFieldToFilter('sku', 'simple')->addAttributeToSelect('small_image')->getFirstItem();
+        $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
+        $this->assertEquals($expectedUrl, $url);
+
+        $collectionWithMediaGalleryData = $this->productCollectionFactory->create();
+        $productWithMediaGalleryData = $collection->addFieldToFilter('sku', 'simple')->addMediaGalleryData()->getFirstItem();
+        $url = $this->getImageUrl($productWithMediaGalleryData);
+        $url = str_replace('pub/', '', $url);
         $this->assertEquals($expectedUrl, $url);
     }
 
