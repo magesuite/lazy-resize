@@ -22,6 +22,11 @@
         <plugin sortOrder="10" name="gather_file_sizes_from_media_entries"
                 type="MageSuite\LazyResize\Plugin\Catalog\Model\Product\Gallery\ReadHandler\GatherFileSizesFromMediaEntries"/>
     </type>
+    
+    <type name="Wyomind\DataFeedManager\Model\ResourceModel\Product\Collection">
+        <plugin sortOrder="10" name="add_media_gallery_data_to_datafeed"
+                type="MageSuite\LazyResize\Plugin\DataFeedManager\Model\ResourceModel\Product\Collection"/>
+    </type>
 
     <preference for="MageSuite\LazyResize\Api\FileSizeRepositoryInterface"
                 type="MageSuite\LazyResize\Model\FileSizeRepository" />

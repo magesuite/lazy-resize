@@ -60,15 +60,19 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsProperUrlWhenImageIsDefinedOnProductFromCollection()
     {
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
+
         /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->productCollectionFactory->create();
         $product = $collection->addFieldToFilter('sku', 'simple')->addAttributeToSelect('small_image')->getFirstItem();
-
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
+        $this->assertEquals($expectedUrl, $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
-
+        $collectionWithMediaGalleryData = $this->productCollectionFactory->create();
+        $productWithMediaGalleryData = $collection->addFieldToFilter('sku', 'simple')->addMediaGalleryData()->getFirstItem();
+        $url = $this->getImageUrl($productWithMediaGalleryData);
+        $url = str_replace('pub/', '', $url);
         $this->assertEquals($expectedUrl, $url);
     }
 
