@@ -4,7 +4,7 @@
     <default>
         <dev>
             <images_optimization>
-                <images_optimization_level>80</images_optimization_level>
+                <images_optimization_level>0</images_optimization_level>
             </images_optimization>
         </dev>
         <images>

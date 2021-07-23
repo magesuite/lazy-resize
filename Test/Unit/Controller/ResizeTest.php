@@ -20,11 +20,6 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
     protected $tokenGeneratorDouble;
 
     /**
-     * @var \MageSuite\ImageOptimization\Service\Image\Optimizer|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $imageOptimizerDouble;
-
-    /**
      * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrlHandlerDouble
      */
     protected $imageUrlHandlerDouble;
@@ -37,8 +32,6 @@ class ResizeTest extends \PHPUnit\Framework\TestCase
             ->getMock();
 
         $this->imageUrlHandlerDouble = $this->getMockBuilder(\MageSuite\LazyResize\Service\ImageUrlHandler::class)->getMock();
-
-        $this->imageOptimizerDouble = $this->getMockBuilder(\MageSuite\ImageOptimization\Service\Image\Optimizer::class)->getMock();
 
         $this->controller = new \MageSuite\LazyResize\Controller\Resize(
             $this->tokenGeneratorDouble,

@@ -45,10 +45,6 @@ class Resize
         try {
             $this->imageProcessor->process($configuration);
 
-            if (isset($configuration['enable_optimization']) && $configuration['enable_optimization'] !== false) {
-                $this->imageProcessor->optimize($configuration);
-            }
-
             $resizedFilePath = $this->imageProcessor->save(str_replace('/media/', '', $requestUri));
 
             return new \Symfony\Component\HttpFoundation\Response(

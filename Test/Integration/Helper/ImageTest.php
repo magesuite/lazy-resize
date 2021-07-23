@@ -46,7 +46,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5abf5c7840a0fc77d8f34b40be5bbd5b/small_image/240x300/000/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -60,7 +60,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsProperUrlWhenImageIsDefinedOnProductFromCollection()
     {
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5abf5c7840a0fc77d8f34b40be5bbd5b/small_image/240x300/000/0/m/a/magento_image.jpg';
 
         /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->productCollectionFactory->create();
@@ -91,7 +91,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/1234/240x300/000/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5abf5c7840a0fc77d8f34b40be5bbd5b/small_image/1234/240x300/000/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -152,7 +152,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/92a6ebf6462b719fcc9c781e7697e4ca/small_image/240x300/001/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/6dbcc1bdc92637b0f1116408ba367b50/small_image/240x300/001/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -173,7 +173,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/92a6ebf6462b719fcc9c781e7697e4ca/small_image/1234/240x300/001/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/6dbcc1bdc92637b0f1116408ba367b50/small_image/1234/240x300/001/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -237,7 +237,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/4b480ef5debc72f2bd51472055f12d23/small_image/240x300/000/80/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5abf5c7840a0fc77d8f34b40be5bbd5b/small_image/240x300/000/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }

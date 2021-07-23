@@ -9,17 +9,9 @@ class ImageProcessor
      */
     protected $imageResize;
 
-    /**
-     * @var \MageSuite\ImageOptimization\Service\Image\Optimizer
-     */
-    protected $imageOptimizer;
-
-    public function __construct(
-        \MageSuite\ImageResize\Service\Image\Resize $imageResize,
-        \MageSuite\ImageOptimization\Service\Image\Optimizer $imageOptimizer
-    ) {
+    public function __construct(\MageSuite\ImageResize\Service\Image\Resize $imageResize)
+    {
         $this->imageResize = $imageResize;
-        $this->imageOptimizer = $imageOptimizer;
     }
 
     /**
@@ -74,14 +66,5 @@ class ImageProcessor
 
         $this->image = new \Imagick();
         $this->image->readImageBlob($imageContents);
-    }
-
-    public function optimize($configuration)
-    {
-        $tmpFile = sys_get_temp_dir() . '/M2C_' . md5($configuration['token'] . $configuration['image_file']);
-        file_put_contents($tmpFile, $this->returnToBrowser());
-        $this->imageOptimizer->optimize($tmpFile);
-        $this->open($tmpFile);
-        unlink($tmpFile);
     }
 }
