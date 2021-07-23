@@ -9,7 +9,6 @@
   "require": {
     "symfony/routing": "^4.2",
     "symfony/http-foundation": "^4.2 || ^5.0",
-    "creativestyle/magesuite-image-optimization": "^1.0.0",
     "creativestyle/magesuite-image-resize": "^1.0.0"
   },
   "autoload": {

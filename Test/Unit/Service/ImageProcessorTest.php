@@ -30,14 +30,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->imageProcessor = new \MageSuite\LazyResize\Service\ImageProcessor(
-            $this->imageResize,
-            new \MageSuite\ImageOptimization\Service\Image\CommandLine\Optimizer(
-                new \ImageOptimizer\OptimizerFactory([
-                    'jpegoptim_options' => ['--max=80'],
-                    'execute_only_first_jpeg_optimizer' => false,
-                    'execute_only_first_png_optimizer' => false
-                ])
-            )
+            $this->imageResize
         );
 
         $this->cleanUpThumbnailsDirectory();
@@ -99,72 +92,6 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
             (is_dir("$dir/$file")) ? $this->deleteDirectory("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
-    }
-
-    public function testIfOptimizePngImageWithTransparencyProperly()
-    {
-        $fileName = '/l/o/logo.png';
-        $configuration = [
-            'image_file' => $fileName,
-            'token' => '4b480ef5debc72f2bd51472055f12d23',
-            'width' => '200',
-            'height' => '100'
-        ];
-        $this->imageProcessor->process($configuration);
-        $processedFileName = $this->imageProcessor->save($fileName);
-        $originalFileSize = filesize($processedFileName);
-        $this->imageProcessor->optimize($configuration);
-        $this->imageProcessor->save($fileName);
-        $optimizedFileSize = filesize($processedFileName);
-        $imagickVersion = \Imagick::getVersion();
-
-        /**
-         * Since version 1629 handling PNG images with a transparent background has been improved.
-         * The output image has a lower file size than the original file.
-         */
-        if (version_compare($imagickVersion['versionNumber'], '1692', '<')) {
-            $this->assertGreaterThan($originalFileSize, $optimizedFileSize);
-        } else {
-            $this->assertLessThan($originalFileSize, $optimizedFileSize);
-        }
-    }
-
-    public function testIfOptimizePngImageWithoutTransparencyProperly()
-    {
-        $fileName = '/l/o/logo_no_transparency.png';
-        $configuration = [
-            'image_file' => $fileName,
-            'token' => '4b480ef5debc72f2bd51472055f12d23',
-            'width' => '200',
-            'height' => '100'
-        ];
-        $this->imageProcessor->process($configuration);
-        $processedFileName = $this->imageProcessor->save($fileName);
-        $originalFileSize = filesize($processedFileName);
-        $this->imageProcessor->optimize($configuration);
-        $this->imageProcessor->save($fileName);
-        $optimizedFileSize = filesize($processedFileName);
-
-        $this->assertLessThan($originalFileSize, $optimizedFileSize);
-    }
-
-    public function testIfOptimizeJpegImageProperly()
-    {
-        $fileName = '/l/o/logo.jpg';
-        $configuration = [
-            'image_file' => $fileName,
-            'token' => '4b480ef5debc72f2bd51472055f12d23',
-            'width' => '200',
-            'height' => '100'
-        ];
-        $this->imageProcessor->process($configuration);
-        $processedFileName = $this->imageProcessor->save($fileName);
-        $originalFileSize = filesize($processedFileName);
-        $this->imageProcessor->optimize($configuration);
-        $this->imageProcessor->save($fileName);
-        $optimizedFileSize = filesize($processedFileName);
-
-        $this->assertLessThan($originalFileSize, $optimizedFileSize);
     }
 
     protected function cleanUpProcessedImagesDirectory()

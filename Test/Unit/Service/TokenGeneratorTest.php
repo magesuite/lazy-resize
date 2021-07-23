@@ -22,9 +22,9 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
             'transparency' => false,
             'enable_optimization' => false,
             'image_file' => '/m/a/magento.jpg',
-            'optimization_level' => 80
+            'optimization_level' => 0
         ]);
 
-        $this->assertEquals('e61c9e15e184913133a02c261fe6435d', $result);
+        $this->assertEquals('8ac664dc3a243519ba61687053ca8c41', $result);
     }
 }

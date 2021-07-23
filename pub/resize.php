@@ -22,7 +22,7 @@ class ResizeApplication
         $imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
 
         $parameters = $imageUrlHandler->parseUrl();
-        if($parameters instanceof \Symfony\Component\HttpFoundation\Response && $parameters->isNotFound()) {
+        if ($parameters instanceof \Symfony\Component\HttpFoundation\Response && $parameters->isNotFound()) {
             header('HTTP/1.0 404 Not Found');
             exit;
         }
@@ -33,13 +33,6 @@ class ResizeApplication
             new \MageSuite\LazyResize\Service\ImageProcessor(
                 new \MageSuite\ImageResize\Service\Image\Resize(
                     new \MageSuite\ImageResize\Repository\File()
-                ),
-                new \MageSuite\ImageOptimization\Service\Image\CommandLine\Optimizer(
-                    new \ImageOptimizer\OptimizerFactory([
-                        'jpegoptim_options' => ['--max=' . $parameters['optimization_level']],
-                        'execute_only_first_jpeg_optimizer' => false,
-                        'execute_only_first_png_optimizer' => false
-                    ])
                 )
             )
         );
