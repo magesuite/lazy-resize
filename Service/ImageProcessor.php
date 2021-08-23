@@ -42,7 +42,7 @@ class ImageProcessor
             return $this->image;
         }
 
-        $contents = @file_get_contents($fileName);
+        $contents = @file_get_contents($fileName); //phpcs:ignore
 
         if ($contents === false) {
             throw new \MageSuite\ImageResize\Exception\OriginalImageNotFound();
@@ -58,7 +58,7 @@ class ImageProcessor
 
     public function open($fileName)
     {
-        $imageContents = @file_get_contents($fileName);
+        $imageContents = @file_get_contents($fileName); //phpcs:ignore
 
         if ($imageContents === false) {
             throw new \MageSuite\ImageResize\Exception\OriginalImageNotFound();

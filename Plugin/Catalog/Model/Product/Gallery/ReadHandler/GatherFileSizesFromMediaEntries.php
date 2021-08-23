@@ -16,11 +16,11 @@ class GatherFileSizesFromMediaEntries
 
     public function afterAddMediaDataToProduct(\Magento\Catalog\Model\Product\Gallery\ReadHandler $subject, $result, \Magento\Catalog\Model\Product $product, array $mediaEntries)
     {
-        if(empty($mediaEntries)) {
+        if (empty($mediaEntries)) {
             return;
         }
 
-        foreach($mediaEntries as $mediaEntry) {
+        foreach ($mediaEntries as $mediaEntry) {
             $this->fileSizeRepository->addFileSize($mediaEntry['file'], $mediaEntry['file_size']);
         }
     }

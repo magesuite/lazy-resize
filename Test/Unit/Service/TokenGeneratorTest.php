@@ -9,13 +9,16 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
      */
     protected $tokenGenerator;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator();
     }
 
-    public function testItGeneratesProperToken() {
+    public function testItGeneratesProperToken()
+    {
         $result = $this->tokenGenerator->generate([
             'type' => 'small_image',
+            'file_size' => 0,
             'width' => 500,
             'height' => 0,
             'aspect_ratio' => true,
@@ -25,6 +28,6 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
             'optimization_level' => 0
         ]);
 
-        $this->assertEquals('8ac664dc3a243519ba61687053ca8c41', $result);
+        $this->assertEquals('75d96cecbf89bbe940985bb795a4db38cff5810b6b4a6f50f1ac169c', $result);
     }
 }

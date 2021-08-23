@@ -31,35 +31,35 @@ class ClearCacheForProductsWithUpdatedImages
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Event\Manager $eventManager,
         \Magento\Framework\Indexer\CacheContext $cacheContext
-    )
-    {
+    ) {
         $this->connection = $resourceConnection->getConnection();
         $this->cache = $cache;
         $this->eventManager = $eventManager;
         $this->cacheContext = $cacheContext;
     }
 
-    public function execute($fileSizes) {
-        if(empty($fileSizes)) {
+    public function execute($fileSizes)
+    {
+        if (empty($fileSizes)) {
             return;
         }
 
         $batches = array_chunk($fileSizes, self::BATCH_SIZE);
 
-        foreach($batches as $batch) {
+        foreach ($batches as $batch) {
             $this->clearCacheForBatchOfImages($batch);
         }
     }
 
     protected function clearCacheForBatchOfImages($batch)
     {
-        $paths = array_map(function($item) {
+        $paths = array_map(function ($item) {
             return $item->getPath();
         }, $batch);
 
         $productIds = $this->getAffectedProductsIds($paths);
 
-        if(empty($productIds)) {
+        if (empty($productIds)) {
             return;
         }
 
@@ -70,7 +70,8 @@ class ClearCacheForProductsWithUpdatedImages
         $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $this->cacheContext]);
     }
 
-    protected function getAffectedProductsIds($imagesPaths) {
+    protected function getAffectedProductsIds($imagesPaths)
+    {
         $galleryValueToEntityTable = $this->connection->getTableName('catalog_product_entity_media_gallery_value_to_entity');
         $galleryTable = $this->connection->getTableName('catalog_product_entity_media_gallery');
 
@@ -89,7 +90,7 @@ class ClearCacheForProductsWithUpdatedImages
     {
         $tags = [];
 
-        foreach($productIds as $productId) {
+        foreach ($productIds as $productId) {
             $tags[] = \Magento\Catalog\Model\Product::CACHE_TAG . '_' . $productId;
         }
 

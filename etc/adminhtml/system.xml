@@ -15,14 +15,6 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="url_generation" translate="label" type="text" sortOrder="250" showInDefault="1">
-                <label>URL generation</label>
-                <field id="include_image_file_size_in_url" translate="label" type="select" sortOrder="10" showInDefault="1">
-                    <label>Include image file size in URL</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>When enabled file size of original image will be included in thumbnail URL. Enable this for environments where product images are uploaded without changing file names (e.g. trough importer).</comment>
-                </field>
-            </group>
         </section>
     </system>
 </config>
