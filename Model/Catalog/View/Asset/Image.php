@@ -193,14 +193,13 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         return [
             'image_file' => $imageFile,
             'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
-            'include_image_file_size_in_url' => $this->configuration->shouldIncludeImageFileSizeInUrl(),
             'type' => $this->getContentType(),
             'width' => (int)$this->miscParams['image_width'],
             'height' => (int)$this->miscParams['image_height'],
             'frame' => $this->miscParams['keep_frame'],
-            'aspect_ratio' => $this->miscParams['keep_aspect_ratio'],
-            'transparency' => $this->miscParams['keep_transparency'],
-            'enable_optimization' => $this->configuration->isOptimizationEnabled(),
+            'aspect_ratio' => $this->returnFormattedStringValue($this->miscParams['keep_aspect_ratio']),
+            'transparency' => $this->returnFormattedStringValue($this->miscParams['keep_transparency']),
+            'enable_optimization' => $this->returnFormattedStringValue($this->configuration->isOptimizationEnabled()),
             'background' => $this->miscParams['background'],
             'optimization_level' => $this->configuration->getOptimizationLevel()
         ];
@@ -208,7 +207,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
     public function getUrlBuilder()
     {
-        if($this->urlBuilder){
+        if ($this->urlBuilder) {
             return $this->urlBuilder;
         }
 
@@ -220,5 +219,10 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         $this->urlBuilder = $urlBuilder;
 
         return $this;
+    }
+
+    private function returnFormattedStringValue($value)
+    {
+        return $value ? '1' : '0';
     }
 }

@@ -22,8 +22,7 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \MageSuite\LazyResize\Model\Cache\ClearCacheForProductsWithUpdatedImages $clearCacheForProductsWithUpdatedImages
-    )
-    {
+    ) {
         $this->connection = $resourceConnection->getConnection();
         $this->clearCacheForProductsWithUpdatedImages = $clearCacheForProductsWithUpdatedImages;
     }
@@ -35,11 +34,11 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
 
     public function getFileSize($filePath)
     {
-        if(empty ($filePath)) {
+        if (empty($filePath)) {
             return 0;
         }
 
-        if(!isset($this->fileSizes[$filePath])) {
+        if (!isset($this->fileSizes[$filePath])) {
             $tableName = $this->connection->getTableName('catalog_product_entity_media_gallery');
             $select = $this->connection->select()
                 ->from($tableName, 'file_size')
@@ -79,7 +78,7 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
             $this->connection->commit();
 
             $this->clearCacheForProductsWithUpdatedImages->execute($fileSizes);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->connection->rollBack();
         }
 

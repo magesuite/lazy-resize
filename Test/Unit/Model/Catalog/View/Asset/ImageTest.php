@@ -7,7 +7,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     const ENABLE_OPTIMIZATION = 0;
     const OPTIMIZATION_LEVEL = 60;
 
-    const CORRECT_IMAGE_PATH = 'thumbnail/%s/image/400x300/110/0/l/o/logo_correct.png';
+    const CORRECT_IMAGE_PATH = 'thumbnail/%s/image/0/400x300/110/0/l/o/logo_correct.png';
     const WRONG_IMAGE_PATH = 'catalog/product/thumbnail/%s/image/400x300/110/0/l/o/logo_wrong.png';
 
     const MISC_PARAMS = [
@@ -44,7 +44,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      */
     protected $configurationStub;
 
-
     public function setUp(): void
     {
         /** @var \Magento\Framework\App\ObjectManager objectManager */
@@ -67,7 +66,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->urlBuilder->method('generateUrl')
             ->willReturn(self::CORRECT_IMAGE_PATH);
 
-        $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
+        $image = $this->objectManager->create(
+            \MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
             [
                 'filePath' => 'l/o/logo_correct.png',
                 'miscParams' => self::MISC_PARAMS
@@ -77,7 +77,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
 
         $this->$assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-        $this->$assertContains('image/400x300/110/0/l/o/logo_correct.png', $image->getPath());
+        $this->$assertContains('image/0/400x300/110/0/l/o/logo_correct.png', $image->getPath());
     }
 
     public function testItReturnImagePathCorrectlyWithCorrectDirectoryAndFileSize()
@@ -87,9 +87,10 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $this->fileSizeRepository->addFileSize('l/o/logo_correct.png', 3000);
 
-        $this->generateReturnValueMapForScopeConfig(1);
+        $this->generateReturnValueMapForScopeConfig();
 
-        $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
+        $image = $this->objectManager->create(
+            \MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
             [
                 'filePath' => 'l/o/logo_correct.png',
                 'miscParams' => self::MISC_PARAMS,
@@ -112,7 +113,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $this->fileSizeRepository->addFileSize('l/o/logo_wrong.png', 4000);
 
-        $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
+        $image = $this->objectManager->create(
+            \MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
             [
                 'filePath' => 'l/o/logo_wrong.png',
                 'miscParams' => self::MISC_PARAMS
@@ -122,7 +124,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
 
         $this->$assertContains('/pub/media/catalog/product/thumbnail', $image->getPath());
-        $this->$assertContains('image/400x300/110/0/l/o/logo_wrong.png', $image->getPath());
+        $this->$assertContains('image/4000/400x300/110/0/l/o/logo_wrong.png', $image->getPath());
     }
 
     public function testItReturnImagePathCorrectlyWithWrongDirectoryAndFileSize()
@@ -131,9 +133,10 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ->willReturn(self::WRONG_IMAGE_PATH);
 
         $this->fileSizeRepository->addFileSize('l/o/logo_wrong.png', 4000);
-        $this->generateReturnValueMapForScopeConfig(1);
+        $this->generateReturnValueMapForScopeConfig();
 
-        $image = $this->objectManager->create(\MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
+        $image = $this->objectManager->create(
+            \MageSuite\LazyResize\Model\Catalog\View\Asset\Image::class,
             [
                 'filePath' => 'l/o/logo_wrong.png',
                 'miscParams' => self::MISC_PARAMS,
@@ -149,12 +152,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->$assertContains('image/4000/400x300/110/60/l/o/logo_wrong.png', $path);
     }
 
-    protected function generateReturnValueMapForScopeConfig($includeImageFileSizeInUrl)
+    protected function generateReturnValueMapForScopeConfig()
     {
-        $this->configurationStub
-            ->method('shouldIncludeImageFileSizeInUrl')
-            ->willReturn($includeImageFileSizeInUrl);
-
         $this->configurationStub
             ->method('isOptimizationEnabled')
             ->willReturn(self::ENABLE_OPTIMIZATION);
@@ -162,5 +161,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->configurationStub
             ->method('getOptimizationLevel')
             ->willReturn(self::OPTIMIZATION_LEVEL);
+
+        $this->configurationStub
+            ->method('getTokenSecret')
+            ->willReturn('123456789abcdefg');
     }
 }

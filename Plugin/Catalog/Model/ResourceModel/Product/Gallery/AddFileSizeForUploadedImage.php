@@ -17,15 +17,14 @@ class AddFileSizeForUploadedImage
     public function __construct(
         \Magento\Catalog\Model\Product\Media\Config $mediaConfig,
         \Magento\Framework\Filesystem $fileSystem
-    )
-    {
+    ) {
         $this->fileSystem = $fileSystem;
         $this->mediaConfig = $mediaConfig;
     }
 
     public function beforeInsertGallery(\Magento\Catalog\Model\ResourceModel\Product\Gallery $subject, $data)
     {
-        if(!isset($data['value'])) {
+        if (!isset($data['value'])) {
             return [$data];
         }
 
@@ -36,7 +35,7 @@ class AddFileSizeForUploadedImage
 
     public function beforeSaveDataRow(\Magento\Catalog\Model\ResourceModel\Product\Gallery $subject, $table, array $data, array $fields = [])
     {
-        if(!isset($data['value'])) {
+        if (!isset($data['value'])) {
             return [$table, $data, $fields];
         }
 

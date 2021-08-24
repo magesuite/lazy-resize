@@ -78,11 +78,10 @@ class Image extends \Magento\Catalog\Helper\Image
             'width' => $this->getWidth(),
             'height' => $this->getHeight(),
             'file_size' => $this->fileSizeRepository->getFileSize($imageFile),
-            'include_image_file_size_in_url' => $this->configuration->shouldIncludeImageFileSizeInUrl(),
             'frame' => $this->getFrame(),
-            'aspect_ratio' => $this->getAttribute('aspect_ratio'),
-            'transparency' => $this->getAttribute('transparency'),
-            'enable_optimization' => $this->configuration->isOptimizationEnabled(),
+            'aspect_ratio' => $this->returnFormattedStringValue($this->getAttribute('aspect_ratio')),
+            'transparency' => $this->returnFormattedStringValue($this->getAttribute('transparency')),
+            'enable_optimization' => $this->returnFormattedStringValue($this->configuration->isOptimizationEnabled()),
             'background' => $this->getAttribute('background'),
             'optimization_level' => $this->configuration->getOptimizationLevel()
         ];
@@ -107,5 +106,10 @@ class Image extends \Magento\Catalog\Helper\Image
     protected function applyScheduledActions()
     {
         return $this;
+    }
+
+    private function returnFormattedStringValue($value)
+    {
+        return $value ? '1' : '0';
     }
 }

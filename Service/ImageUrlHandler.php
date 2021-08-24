@@ -19,7 +19,7 @@ class ImageUrlHandler
         'boolean_flags' => '[0|1]{3}',
         'optimization_level' => '[0-9]{1,3}',
         'file_size' => '[0-9]{1,12}',
-        'token' => '[a-z0-9]{32}',
+        'token' => '[a-z0-9]{56}',
         'first_letter' => '[^/]',
         'second_letter' => '[^/]',
         'image_file_path' => '[^/]+'
@@ -62,7 +62,7 @@ class ImageUrlHandler
          * There's no need to have uploaded files data only for ULRs generation and mathing.
          * But without this Magento is throwing errors when tests with file upload are running
          */
-        $_FILES = [];
+        $_FILES = []; //phpcs:ignore
         $context->fromRequest(\Symfony\Component\HttpFoundation\Request::createFromGlobals());
         $this->requestContext = $context;
     }
@@ -77,7 +77,7 @@ class ImageUrlHandler
         $matcher = new \Symfony\Component\Routing\Matcher\UrlMatcher($this->routes, $this->requestContext);
 
         try {
-           $urlParts = $matcher->match($url);
+            $urlParts = $matcher->match($url);
         } catch (\Symfony\Component\Routing\Exception\ResourceNotFoundException $exception) {
             return new \Symfony\Component\HttpFoundation\Response(
                 '',
@@ -87,7 +87,7 @@ class ImageUrlHandler
 
         $urlParts += $this->parseWidthAndHeight($urlParts['width_and_height']);
         $urlParts += $this->parseBooleanFlags($urlParts['boolean_flags']);
-        $urlParts['image_file'] = '/'. implode('/', [ $urlParts['first_letter'], $urlParts['second_letter'], $urlParts['image_file_path']]);
+        $urlParts['image_file'] = '/' . implode('/', [ $urlParts['first_letter'], $urlParts['second_letter'], $urlParts['image_file_path']]);
 
         return $urlParts;
     }
@@ -96,17 +96,9 @@ class ImageUrlHandler
     {
         $tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator();
 
-        $includeFileSizeInUrl = $configuration['include_image_file_size_in_url'] ?? false;
-
-        if($includeFileSizeInUrl && !isset($configuration['file_size'])) {
+        if (!isset($configuration['file_size'])) {
             $configuration['file_size'] = 0;
         }
-
-        if(!$includeFileSizeInUrl && isset($configuration['file_size']) ) {
-            unset($configuration['file_size']);
-        }
-
-        $routeIdentifier = $includeFileSizeInUrl ? 'resize_with_file_size' : 'resize';
 
         $configuration['width_and_height'] = $this->buildWidthAndHeight($configuration);
         $configuration['boolean_flags'] = $this->buildBooleanFlags($configuration);
@@ -124,7 +116,7 @@ class ImageUrlHandler
 
         $configuration = array_filter(
             $configuration,
-            function ($key) use ($parts) {
+            function ($key) use ($parts) { //phpcs:ignore
                 return in_array($key, array_keys($parts));
             },
             ARRAY_FILTER_USE_KEY
@@ -132,19 +124,21 @@ class ImageUrlHandler
 
         $generator = new \Symfony\Component\Routing\Generator\UrlGenerator($this->routes, $this->requestContext);
 
-        return preg_replace('/(\/index.php)?\/media\//i', '', $generator->generate($routeIdentifier, $configuration));
+        return preg_replace('/(\/index.php)?\/media\//i', '', $generator->generate('resize_with_file_size', $configuration));
     }
 
-    protected function parseWidthAndHeight($widthAndHeight) {
+    protected function parseWidthAndHeight($widthAndHeight)
+    {
         list($width, $height) = explode('x', $widthAndHeight);
 
         return [
-            'width' => intval($width),
-            'height' => intval($height)
+            'width' => (int)$width,
+            'height' => (int)$height
         ];
     }
 
-    protected function parseBooleanFlags($booleanFlags) {
+    protected function parseBooleanFlags($booleanFlags)
+    {
         $flags = [
             'aspect_ratio',
             'transparency',
@@ -152,17 +146,19 @@ class ImageUrlHandler
         ];
 
         $values = [];
+        $booleanFlagsLength = strlen($booleanFlags);
 
-        for($index = 0; $index < strlen($booleanFlags); $index++) {
+        for ($index = 0; $index < $booleanFlagsLength; $index++) {
             $values[$flags[$index]] = $booleanFlags[$index] == '1' ? true : false;
         }
 
         return $values;
     }
 
-    protected function buildWidthAndHeight($configuration) {
-        $width = isset($configuration['width']) ? intval($configuration['width']) : 0;
-        $height = isset($configuration['height']) ? intval($configuration['height']) : 0;
+    protected function buildWidthAndHeight($configuration)
+    {
+        $width = isset($configuration['width']) ? (int)$configuration['width'] : 0;
+        $height = isset($configuration['height']) ? (int)$configuration['height'] : 0;
 
         return sprintf('%sx%s', $width, $height);
     }
@@ -177,8 +173,8 @@ class ImageUrlHandler
 
         $result = '';
 
-        foreach($flags as $flagIdentifier) {
-            if(isset($configuration[$flagIdentifier]) and $configuration[$flagIdentifier]) {
+        foreach ($flags as $flagIdentifier) {
+            if (isset($configuration[$flagIdentifier]) && $configuration[$flagIdentifier]) {
                 $result .= '1';
                 continue;
             }

@@ -9,11 +9,13 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageUrlHandler;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 
-    public function testItGeneratesProperUrlBasedOnConfiguration() {
+    public function testItGeneratesProperUrlBasedOnConfiguration()
+    {
         $result = $this->imageUrlHandler->generateUrl([
             'type' => 'small_image',
             'width' => 500,
@@ -25,15 +27,15 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/8ac664dc3a243519ba61687053ca8c41/small_image/500x0/100/0/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/75d96cecbf89bbe940985bb795a4db38cff5810b6b4a6f50f1ac169c/small_image/0/500x0/100/0/m/a/magento.jpg', $result);
     }
 
-    public function testItGeneratesProperUrlBasedOnConfigurationWithFileSize() {
+    public function testItGeneratesProperUrlBasedOnConfigurationWithFileSize()
+    {
         $result = $this->imageUrlHandler->generateUrl([
             'type' => 'small_image',
             'width' => 500,
             'file_size' => 300,
-            'include_image_file_size_in_url' => true,
             'height' => 0,
             'aspect_ratio' => true,
             'transparency' => false,
@@ -42,25 +44,25 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/8ac664dc3a243519ba61687053ca8c41/small_image/300/500x0/100/0/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/857c018fbaea381b3287ba235746e43b19c71b81ab048fd4fe27da61/small_image/300/500x0/100/0/m/a/magento.jpg', $result);
     }
 
     public function testItParsesUrlProperlyWithFileSize()
     {
-        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/b5531dfad8d6aa194efeeb269fdb7c58/small_image/400/500x0/100/0/m/a/magento.jpg');
+        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/127bad9ac8625137b06402854820b84681f9315e3ec01a08d2622750/small_image/400/500x0/100/0/m/a/magento.jpg');
 
         $this->assertEquals(
             [
                 'type' => 'small_image',
                 'width' => 500,
                 'height' => 0,
-                'file_size' => 400,
+                'file_size' => '400',
                 'aspect_ratio' => true,
                 'transparency' => false,
                 'enable_optimization' => false,
                 'optimization_level' => '0',
                 'image_file' => '/m/a/magento.jpg',
-                'token' => 'b5531dfad8d6aa194efeeb269fdb7c58',
+                'token' => '127bad9ac8625137b06402854820b84681f9315e3ec01a08d2622750',
                 'width_and_height' => '500x0',
                 'boolean_flags' => '100',
                 'first_letter' => 'm',
@@ -68,31 +70,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
                 'image_file_path' => 'magento.jpg',
                 '_route' => 'resize_with_file_size',
             ],
-            $result);
-    }
-
-    public function testItParsesUrlProperlyWithoutFileSize()
-    {
-        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/b5531dfad8d6aa194efeeb269fdb7c58/small_image/500x0/100/0/m/a/magento.jpg');
-
-        $this->assertEquals(
-            [
-                'type' => 'small_image',
-                'width' => 500,
-                'height' => 0,
-                'aspect_ratio' => true,
-                'transparency' => false,
-                'enable_optimization' => false,
-                'optimization_level' => '0',
-                'image_file' => '/m/a/magento.jpg',
-                'token' => 'b5531dfad8d6aa194efeeb269fdb7c58',
-                'width_and_height' => '500x0',
-                'boolean_flags' => '100',
-                'first_letter' => 'm',
-                'second_letter' => 'a',
-                'image_file_path' => 'magento.jpg',
-                '_route' => 'resize',
-            ],
-            $result);
+            $result
+        );
     }
 }

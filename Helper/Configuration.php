@@ -4,6 +4,10 @@ namespace MageSuite\LazyResize\Helper;
 
 class Configuration
 {
+    const XML_PATH_ENABLE_OPTIMIZATION = 'images/images_optimization/enable_optimization';
+    const XML_PATH_OPTIMIZATION_LEVEL = 'dev/images_optimization/images_optimization_level';
+    const XML_PATH_TOKEN_SECRET = 'dev/lazy_resize/token_secret';
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -14,16 +18,18 @@ class Configuration
         $this->scopeConfig = $scopeConfig;
     }
 
-    public function shouldIncludeImageFileSizeInUrl() {
-        return (bool)$this->scopeConfig->getValue('images/url_generation/include_image_file_size_in_url');
+    public function isOptimizationEnabled()
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_ENABLE_OPTIMIZATION);
     }
 
-
-    public function isOptimizationEnabled() {
-        return (bool)$this->scopeConfig->getValue('images/images_optimization/enable_optimization');
+    public function getOptimizationLevel()
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_OPTIMIZATION_LEVEL);
     }
 
-    public function getOptimizationLevel() {
-        return $this->scopeConfig->getValue('dev/images_optimization/images_optimization_level');
+    public function getTokenSecret()
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_TOKEN_SECRET);
     }
 }

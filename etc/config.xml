@@ -6,14 +6,14 @@
             <images_optimization>
                 <images_optimization_level>0</images_optimization_level>
             </images_optimization>
+            <lazy_resize>
+                <token_secret>f8f9fb44b4d7c6fe7ecef7091d475170</token_secret>
+            </lazy_resize>
         </dev>
         <images>
             <images_optimization>
                 <enable_optimization>0</enable_optimization>
             </images_optimization>
-            <url_generation>
-                <include_image_file_size_in_url>0</include_image_file_size_in_url>
-            </url_generation>
         </images>
     </default>
 </config>

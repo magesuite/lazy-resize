@@ -9,4 +9,3 @@ $connection->update(
     ['file_size' => 1234],
     ['value = ?' => '/m/a/magento_image.jpg']
 );
-

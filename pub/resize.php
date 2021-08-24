@@ -1,6 +1,5 @@
 <?php
-
-use Symfony\Component\HttpFoundation\Request;
+// phpcs:ignoreFile
 
 if (!defined('BP')) {
     define('BP', realpath(__DIR__ . '/../'));
@@ -17,14 +16,14 @@ class ResizeApplication
 
     public function run()
     {
-        $request = Request::createFromGlobals();
+        $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
         $imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
 
         $parameters = $imageUrlHandler->parseUrl();
         if ($parameters instanceof \Symfony\Component\HttpFoundation\Response && $parameters->isNotFound()) {
-            header('HTTP/1.0 404 Not Found');
-            exit;
+            header('HTTP/1.0 404 Not Found'); //phpcs:ignore
+            exit; //phpcs:ignore
         }
 
         $controller = new \MageSuite\LazyResize\Controller\Resize(

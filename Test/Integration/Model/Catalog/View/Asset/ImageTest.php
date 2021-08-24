@@ -40,7 +40,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/dc570bc327ba3a73a10464be266ce500/image/240x300/110/0/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5638f8f88146f6fc48a1ae84c47d74fe6d633a4cc8a61626717c8341/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -49,7 +49,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/images/url_generation/include_image_file_size_in_url 1
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -60,7 +59,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/dc570bc327ba3a73a10464be266ce500/image/1234/240x300/110/0/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5638f8f88146f6fc48a1ae84c47d74fe6d633a4cc8a61626717c8341/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -77,15 +76,15 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     {
         // Below globals are set to emulate scenario where base url contains index.php
         // because request is created based on globals \MageSuite\LazyResize\Service\ImageUrlHandler::66
-        $_SERVER['ORIGINAL_URI'] = '/index.php';
-        $_SERVER['REQUEST_URI'] = '/index.php';
+        $_SERVER['ORIGINAL_URI'] = '/index.php'; //phpcs:ignore
+        $_SERVER['REQUEST_URI'] = '/index.php'; //phpcs:ignore
 
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/dc570bc327ba3a73a10464be266ce500/image/240x300/110/0/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5638f8f88146f6fc48a1ae84c47d74fe6d633a4cc8a61626717c8341/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
