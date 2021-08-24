@@ -31,6 +31,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenImageIsDefined()
@@ -40,7 +41,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5638f8f88146f6fc48a1ae84c47d74fe6d633a4cc8a61626717c8341/image/1234/240x300/110/0/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/eeafb757b9dea629e9d4d719418170bffd4c0d041ea06292851fd09d/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -50,6 +51,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenImageAndFileSizeIsDefined()
@@ -59,7 +61,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5638f8f88146f6fc48a1ae84c47d74fe6d633a4cc8a61626717c8341/image/1234/240x300/110/0/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/eeafb757b9dea629e9d4d719418170bffd4c0d041ea06292851fd09d/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -69,6 +71,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store web/url/redirect_to_base 0
+     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -84,7 +87,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/5638f8f88146f6fc48a1ae84c47d74fe6d633a4cc8a61626717c8341/image/1234/240x300/110/0/m/a/magento_image.jpg';
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/eeafb757b9dea629e9d4d719418170bffd4c0d041ea06292851fd09d/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
     }

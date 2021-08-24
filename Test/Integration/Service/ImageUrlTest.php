@@ -1,19 +1,27 @@
 <?php
 
-namespace MageSuite\LazyResize\Test\Unit\Service;
+namespace MageSuite\LazyResize\Test\Integration\Service;
 
 class ImageUrlTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrlHandler
+     * @var \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler
      */
     protected $imageUrlHandler;
 
     public function setUp(): void
     {
-        $this->imageUrlHandler = new \MageSuite\LazyResize\Service\ImageUrlHandler();
+        $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
+
+        $this->imageUrlHandler = $objectManager->get(\MageSuite\LazyResize\Service\ImageUrlHandler::class);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
+     */
     public function testItGeneratesProperUrlBasedOnConfiguration()
     {
         $result = $this->imageUrlHandler->generateUrl([
@@ -27,9 +35,15 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/75d96cecbf89bbe940985bb795a4db38cff5810b6b4a6f50f1ac169c/small_image/0/500x0/100/0/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/27b9feaac9e54cd989aa1cc99736483a913ed3efa8f4b4ab70420054/small_image/0/500x0/100/0/m/a/magento.jpg', $result);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
+     */
     public function testItGeneratesProperUrlBasedOnConfigurationWithFileSize()
     {
         $result = $this->imageUrlHandler->generateUrl([
@@ -44,12 +58,12 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/857c018fbaea381b3287ba235746e43b19c71b81ab048fd4fe27da61/small_image/300/500x0/100/0/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/fd7d0c64c8957b31fe0cabc9fc049ab052d6c03d86d14ff64b3f6766/small_image/300/500x0/100/0/m/a/magento.jpg', $result);
     }
 
     public function testItParsesUrlProperlyWithFileSize()
     {
-        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/127bad9ac8625137b06402854820b84681f9315e3ec01a08d2622750/small_image/400/500x0/100/0/m/a/magento.jpg');
+        $result = $this->imageUrlHandler->matchUrl('/media/catalog/product/thumbnail/fd7d0c64c8957b31fe0cabc9fc049ab052d6c03d86d14ff64b3f6766/small_image/400/500x0/100/0/m/a/magento.jpg');
 
         $this->assertEquals(
             [
@@ -62,7 +76,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
                 'enable_optimization' => false,
                 'optimization_level' => '0',
                 'image_file' => '/m/a/magento.jpg',
-                'token' => '127bad9ac8625137b06402854820b84681f9315e3ec01a08d2622750',
+                'token' => 'fd7d0c64c8957b31fe0cabc9fc049ab052d6c03d86d14ff64b3f6766',
                 'width_and_height' => '500x0',
                 'boolean_flags' => '100',
                 'first_letter' => 'm',
