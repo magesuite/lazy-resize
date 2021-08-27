@@ -8,6 +8,9 @@
     <preference for="Magento\Catalog\Model\View\Asset\Image"
                 type="MageSuite\LazyResize\Model\Catalog\View\Asset\Image" />
 
+    <preference for="MageSuite\LazyResize\Api\TokenSecretProviderInterface"
+                type="MageSuite\LazyResize\Service\Magento\TokenSecretProvider" />
+
     <type name="Magento\Catalog\Model\ResourceModel\Product\Gallery">
         <plugin name="add_file_size_column_to_sql_query"
                 type="MageSuite\LazyResize\Plugin\Catalog\Model\ResourceModel\Product\Gallery\AddFileSizeColumnToSqlQuery"

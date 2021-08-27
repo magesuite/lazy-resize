@@ -6,9 +6,6 @@
             <images_optimization>
                 <images_optimization_level>0</images_optimization_level>
             </images_optimization>
-            <lazy_resize>
-                <token_secret>f8f9fb44b4d7c6fe7ecef7091d475170</token_secret>
-            </lazy_resize>
         </dev>
         <images>
             <images_optimization>
