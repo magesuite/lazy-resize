@@ -11,7 +11,7 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
         if (!$this->validateEnvFilePath()) {
             return \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
         }
-        
+
         $cacheFilePath = $this->getCacheFilePath();
 
         $secret = @file_get_contents($cacheFilePath); //phpcs:ignore
@@ -80,7 +80,7 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
 
     private function getDatabaseConfig(): array
     {
-        $config = require_once BP . '/app/etc/env.php'; //phpcs:ignore
+        $config = include BP . '/app/etc/env.php'; //phpcs:ignore
 
         return [
             'credentials' => $config['db']['connection']['default'],
