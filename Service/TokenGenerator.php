@@ -5,18 +5,18 @@ namespace MageSuite\LazyResize\Service;
 class TokenGenerator
 {
     /**
-     * @var \MageSuite\LazyResize\Helper\Configuration
+     * @var \MageSuite\LazyResize\Api\TokenSecretProviderInterface
      */
-    protected $configuration;
+    protected $tokenSecretProvider;
 
-    public function __construct(\MageSuite\LazyResize\Helper\Configuration $configuration = null)
+    public function __construct(\MageSuite\LazyResize\Api\TokenSecretProviderInterface $tokenSecretProvider = null)
     {
-        $this->configuration = $configuration ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\MageSuite\LazyResize\Helper\Configuration::class);
+        $this->tokenSecretProvider = $tokenSecretProvider ?: new \MageSuite\LazyResize\Service\Resize\TokenSecretProvider();
     }
 
     public function generate($configuration)
     {
-        $key = $this->getSecret() .
+        $key = $this->tokenSecretProvider->getTokenSecret() .
             sha1($configuration['type']) .
             $configuration['file_size'] .
             $configuration['width'] .
@@ -28,10 +28,5 @@ class TokenGenerator
             $configuration['optimization_level'];
 
         return hash('sha3-224', $key);
-    }
-
-    protected function getSecret()
-    {
-        return $this->configuration->getTokenSecret();
     }
 }

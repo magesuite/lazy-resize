@@ -8,6 +8,8 @@ class Configuration
     const XML_PATH_OPTIMIZATION_LEVEL = 'dev/images_optimization/images_optimization_level';
     const XML_PATH_TOKEN_SECRET = 'dev/lazy_resize/token_secret';
 
+    const DEFAULT_TOKEN_SECRET = 'f8f9fb44b4d7c6fe7ecef7091d475170';
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -30,6 +32,8 @@ class Configuration
 
     public function getTokenSecret()
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_TOKEN_SECRET);
+        $secret = $this->scopeConfig->getValue(self::XML_PATH_TOKEN_SECRET);
+
+        return $secret ?: self::DEFAULT_TOKEN_SECRET;
     }
 }

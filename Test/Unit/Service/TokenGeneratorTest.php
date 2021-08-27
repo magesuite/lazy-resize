@@ -10,31 +10,26 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
     protected $tokenGenerator;
 
     /**
-     * @var \MageSuite\LazyResize\Helper\Configuration|\PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
-    protected $configuration;
-
+    protected $tokenSecretProviderStub;
 
     public function setUp(): void
     {
-        $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
-
-        $this->configuration = $this->getMockBuilder(\MageSuite\LazyResize\Helper\Configuration::class)
-            ->setMethods(['getTokenSecret'])
+        $this->tokenSecretProviderStub = $this->getMockBuilder(\MageSuite\LazyResize\Service\Resize\TokenSecretProvider::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->tokenGenerator = $objectManager->create(
-            \MageSuite\LazyResize\Service\TokenGenerator::class,
-            [
-                'configuration' => $this->configuration
-            ]
+        $this->tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator(
+            $this->tokenSecretProviderStub
         );
     }
 
     public function testItGeneratesProperToken()
     {
-        $this->configuration->method('getTokenSecret')->willReturn('f8f9fb44b4d7c6fe7ecef7091d475170');
+        $this->tokenSecretProviderStub
+            ->method('getTokenSecret')
+            ->willReturn(\MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET);
 
         $result = $this->tokenGenerator->generate([
             'type' => 'small_image',
