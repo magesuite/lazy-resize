@@ -8,6 +8,10 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
 
     public function getTokenSecret(): string
     {
+        if (!$this->validateEnvFilePath()) {
+            return \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
+        }
+        
         $cacheFilePath = $this->getCacheFilePath();
 
         $secret = @file_get_contents($cacheFilePath); //phpcs:ignore
@@ -39,10 +43,6 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
 
     protected function getSecretFromDatabase()
     {
-        if (!$this->validateEnvFilePath()) {
-            return \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
-        }
-
         $databaseConfig = $this->getDatabaseConfig();
         $tableName = $databaseConfig['table_prefix'] . 'core_config_data';
 
