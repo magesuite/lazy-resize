@@ -39,6 +39,10 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
 
     protected function getSecretFromDatabase()
     {
+        if (!$this->validateEnvFilePath()) {
+            return \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
+        }
+
         $databaseConfig = $this->getDatabaseConfig();
         $tableName = $databaseConfig['table_prefix'] . 'core_config_data';
 
@@ -50,6 +54,17 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
         $secret = $stmt->fetchColumn();
 
         return $secret ?: \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
+    }
+
+    protected function validateEnvFilePath()
+    {
+        $path = BP . '/app/etc/env.php';
+
+        if (file_exists($path)) { //phpcs:ignore
+            return true;
+        }
+
+        return false;
     }
 
     protected function getConnection($databaseConfig)
