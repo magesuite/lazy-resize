@@ -102,12 +102,12 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/images_optimization/images_optimization_level 60
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
     public function testIfImageUrlHaveChangedOptimizationLevelParam()
     {
+        $this->setOptimizationLevel(60, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE, 'base');
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
@@ -122,12 +122,12 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/images_optimization/images_optimization_level 60
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
     public function testIfImageUrlHaveChangedOptimizationLevelParamAndFileSize()
     {
+        $this->setOptimizationLevel(60, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE, 'base');
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
@@ -257,6 +257,13 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageHelper->init($product, 'category_page_grid', []);
 
         return $this->imageHelper->getUrl();
+    }
+
+    protected function setOptimizationLevel($value, $scope = \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0)
+    {
+        /** @var \Magento\TestFramework\App\Config $config */
+        $config = $this->objectManager->get(\Magento\TestFramework\App\Config::class);
+        $config->setValue(\MageSuite\LazyResize\Helper\Configuration::XML_PATH_OPTIMIZATION_LEVEL, $value, $scope, $scopeId);
     }
 
     public static function setFileSize()

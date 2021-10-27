@@ -8,11 +8,15 @@
             <label>Images</label>
             <tab>magesuite</tab>
             <resource>MageSuite_LazyResize::config_imagesoptimization</resource>
-            <group id="images_optimization" translate="label" type="text" sortOrder="250" showInDefault="1">
+            <group id="images_optimization" translate="label" type="text" sortOrder="250" showInDefault="1" showInWebsite="1">
                 <label>Images Optimization</label>
                 <field id="enable_optimization" translate="label" type="select" sortOrder="10" showInDefault="1">
                     <label>Enable Images Optimization</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="images_optimization_level" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+                    <label>Optimization Level</label>
+                    <comment>Acceptable value is between 0 and 100</comment>
                 </field>
             </group>
         </section>
