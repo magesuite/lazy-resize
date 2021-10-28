@@ -6,9 +6,11 @@
             <images_optimization>
                 <enable_optimization>0</enable_optimization>
             </images_optimization>
+        </images>
+        <dev>
             <images_optimization>
                 <images_optimization_level>0</images_optimization_level>
             </images_optimization>
-        </images>
+        </dev>
     </default>
 </config>
