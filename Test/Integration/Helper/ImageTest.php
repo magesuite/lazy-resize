@@ -30,13 +30,15 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->productCollectionFactory = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
+
+        $tokenSecretHelper = $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
+        $tokenSecretHelper->prepareTokenSecretForTests();
     }
 
     /**
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -56,7 +58,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -82,7 +83,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -102,13 +102,12 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/images_optimization/images_optimization_level 60
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
     public function testIfImageUrlHaveChangedOptimizationLevelParam()
     {
+        $this->setOptimizationLevel(60, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE, 'base');
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
@@ -123,13 +122,12 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/images_optimization/images_optimization_level 60
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
     public function testIfImageUrlHaveChangedOptimizationLevelParamAndFileSize()
     {
+        $this->setOptimizationLevel(60, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE, 'base');
         $product = $this->productRepository->get('simple');
 
         $url = $this->getImageUrl($product);
@@ -145,7 +143,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture default/images/images_optimization/enable_optimization 1
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -166,7 +163,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture default/images/images_optimization/enable_optimization 1
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -186,7 +182,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
     public function testItReturnsPlaceholderUrlWhenImageIsNotDefined()
@@ -209,7 +204,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoConfigFixture current_store catalog/placeholder/small_image_placeholder default/placeholder.jpg
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      */
     public function testItReturnsCustomPlaceholderUrlWhenItIsDefined()
     {
@@ -228,7 +222,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store web/url/redirect_to_base 0
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */
@@ -264,6 +257,13 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageHelper->init($product, 'category_page_grid', []);
 
         return $this->imageHelper->getUrl();
+    }
+
+    protected function setOptimizationLevel($value, $scope = \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0)
+    {
+        /** @var \Magento\TestFramework\App\Config $config */
+        $config = $this->objectManager->get(\Magento\TestFramework\App\Config::class);
+        $config->setValue(\MageSuite\LazyResize\Helper\Configuration::XML_PATH_OPTIMIZATION_LEVEL, $value, $scope, $scopeId);
     }
 
     public static function setFileSize()

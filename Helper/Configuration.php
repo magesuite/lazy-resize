@@ -27,7 +27,7 @@ class Configuration
 
     public function getOptimizationLevel()
     {
-        return $this->scopeConfig->getValue(self::XML_PATH_OPTIMIZATION_LEVEL);
+        return $this->scopeConfig->getValue(self::XML_PATH_OPTIMIZATION_LEVEL, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
     }
 
     public function getTokenSecret()

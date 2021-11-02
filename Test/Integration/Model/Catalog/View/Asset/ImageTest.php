@@ -24,6 +24,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->imageBuilder = $this->objectManager->get(\Magento\Catalog\Block\Product\ImageBuilder::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+
+        $tokenSecretHelper = $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
+        $tokenSecretHelper->prepareTokenSecretForTests();
     }
 
     /**
@@ -31,7 +34,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenImageIsDefined()
@@ -51,7 +53,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenImageAndFileSizeIsDefined()
@@ -71,7 +72,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store web/url/redirect_to_base 0
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
      * @magentoDataFixture setFileSize
      */

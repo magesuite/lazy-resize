@@ -14,13 +14,15 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->imageUrlHandler = $objectManager->get(\MageSuite\LazyResize\Service\ImageUrlHandler::class);
+
+        $tokenSecretHelper = $objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
+        $tokenSecretHelper->prepareTokenSecretForTests();
     }
 
     /**
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      */
     public function testItGeneratesProperUrlBasedOnConfiguration()
     {
@@ -42,7 +44,6 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture default/dev/lazy_resize/token_secret f8f9fb44b4d7c6fe7ecef7091d475170
      */
     public function testItGeneratesProperUrlBasedOnConfigurationWithFileSize()
     {
