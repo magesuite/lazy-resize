@@ -9,6 +9,8 @@ class TokenGenerator
      */
     protected $tokenSecretProvider;
 
+    protected static $secretToken = null;
+
     public function __construct(\MageSuite\LazyResize\Api\TokenSecretProviderInterface $tokenSecretProvider = null)
     {
         $this->tokenSecretProvider = $tokenSecretProvider ?: new \MageSuite\LazyResize\Service\Resize\TokenSecretProvider();
@@ -16,7 +18,11 @@ class TokenGenerator
 
     public function generate($configuration)
     {
-        $key = $this->tokenSecretProvider->getTokenSecret() .
+        if (!self::$secretToken) {
+            self::$secretToken = $this->tokenSecretProvider->getTokenSecret();
+        }
+
+        $key = self::$secretToken .
             sha1($configuration['type']) .
             $configuration['file_size'] .
             $configuration['width'] .
