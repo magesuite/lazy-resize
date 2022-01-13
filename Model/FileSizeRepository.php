@@ -30,7 +30,7 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
 
     public function addFileSize($filePath, $fileSize)
     {
-        $this->fileSizes[$filePath] = $fileSize;
+        $this->fileSizes[$filePath] = (int)$fileSize;
     }
 
     public function getFileSize($filePath)
