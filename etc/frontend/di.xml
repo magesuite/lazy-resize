@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Catalog\Model\Product">
+        <plugin sortOrder="10" name="add_image_file_size_to_repository"
+                type="MageSuite\LazyResize\Plugin\Catalog\Model\Product\AddImageFileSizeToRepository"/>
+    </type>
+</config>
