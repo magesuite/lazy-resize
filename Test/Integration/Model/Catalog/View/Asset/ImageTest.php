@@ -79,6 +79,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     {
         // Below globals are set to emulate scenario where base url contains index.php
         // because request is created based on globals \MageSuite\LazyResize\Service\ImageUrlHandler::66
+        $serverVal = $_SERVER;
         $_SERVER['ORIGINAL_URI'] = '/index.php'; //phpcs:ignore
         $_SERVER['REQUEST_URI'] = '/index.php'; //phpcs:ignore
 
@@ -90,6 +91,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/eeafb757b9dea629e9d4d719418170bffd4c0d041ea06292851fd09d/image/1234/240x300/110/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
+        $_SERVER = $serverVal;
     }
 
     /**
