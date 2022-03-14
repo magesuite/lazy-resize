@@ -56,7 +56,11 @@ class Resize
                 200,
                 ['Content-Type' => $this->imageProcessor->getMimeType()]
             );
-        } catch (\MageSuite\ImageResize\Exception\OriginalImageNotFound | \MageSuite\ImageResize\Exception\EmptyImageLoaded $exception) {
+        } catch (
+            \MageSuite\ImageResize\Exception\OriginalImageNotFound
+            | \MageSuite\ImageResize\Exception\EmptyImageLoaded
+            | \ImagickException $exception
+        ) {
             return new \Symfony\Component\HttpFoundation\RedirectResponse(
                 sprintf(self::PLACEHOLDER_LOCATION, $configuration['type'])
             );
