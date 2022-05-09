@@ -6,8 +6,6 @@ class Image extends \Magento\Catalog\Helper\Image
 {
     const NOT_SELECTED_IMAGE = 'no_selection';
 
-    protected $mediaBaseUrl;
-
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
@@ -36,7 +34,6 @@ class Image extends \Magento\Catalog\Helper\Image
 
         $this->storeManager = $storeManager;
         $this->fileSizeRepository = $fileSizeRepository;
-        $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
         $this->configuration = $configuration;
     }
 
@@ -53,7 +50,7 @@ class Image extends \Magento\Catalog\Helper\Image
             return $this->getPlaceholderUrl();
         }
 
-        return $this->mediaBaseUrl . $this->getUrlBuilder()->generateUrl($attributes);
+        return $this->getMediaBaseUrl() . $this->getUrlBuilder()->generateUrl($attributes);
     }
 
     public function getResizedImageInfo()
@@ -101,11 +98,16 @@ class Image extends \Magento\Catalog\Helper\Image
             return $this->_assetRepo->getUrl("Magento_Catalog::images/product/placeholder/{$destinationSubDir}.jpg");
         }
 
-        return $this->mediaBaseUrl . 'catalog/product/placeholder/' . $placeholderPathFromConfig;
+        return $this->getMediaBaseUrl() . 'catalog/product/placeholder/' . $placeholderPathFromConfig;
     }
 
     protected function applyScheduledActions()
     {
         return $this;
+    }
+
+    protected function getMediaBaseUrl()
+    {
+        return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
 }
