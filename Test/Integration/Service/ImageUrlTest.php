@@ -88,4 +88,43 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             $result
         );
     }
+
+    public function testItGeneratesProperUrlWithBooleanParameters()
+    {
+        $url = $this->imageUrlHandler->generateUrl([
+            'type' => 'small_image',
+            'width' => 500,
+            'height' => 0,
+            'aspect_ratio' => '0',
+            'transparency' => '0',
+            'enable_optimization' => '0',
+            'optimization_level' => 0,
+            'image_file' => '/m/a/magento.jpg'
+        ]);
+        $expectedUrl = 'catalog/product/thumbnail/0456cc204bac5231483ab88761611efd9d4e62d6801c5b1d9bd77736/small_image/0/500x0/000/0/m/a/magento.jpg';
+        $this->assertEquals($expectedUrl, $url);
+
+        $matchUrl = $this->imageUrlHandler->matchUrl('/media/' . $expectedUrl);
+        $this->assertEquals(
+            [
+                'type' => 'small_image',
+                'width' => 500,
+                'height' => 0,
+                'file_size' => '0',
+                'aspect_ratio' => '0',
+                'transparency' => '0',
+                'enable_optimization' => '0',
+                'optimization_level' => 0,
+                'image_file' => '/m/a/magento.jpg',
+                'token' => '0456cc204bac5231483ab88761611efd9d4e62d6801c5b1d9bd77736',
+                'width_and_height' => '500x0',
+                'boolean_flags' => '000',
+                'first_letter' => 'm',
+                'second_letter' => 'a',
+                'image_file_path' => 'magento.jpg',
+                '_route' => 'resize_with_file_size',
+            ],
+            $matchUrl
+        );
+    }
 }
