@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MageSuite_Changelog:etc/changelog.xsd">
+    <module
+        id="MageSuite_LazyResize"
+        name="MageSuite_LazyResize">
+        <changelog>
+            <tag version="3.2.15" date="2022-09-05">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix image url generation from boolean values to int</overview>
+                    <ticket_id>RK-164</ticket_id>
+                </entry>
+            </tag>
+        </changelog>
+    </module>
+</config>
