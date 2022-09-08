@@ -154,7 +154,7 @@ class ImageUrlHandler
         $values = [];
 
         for($index = 0; $index < strlen($booleanFlags); $index++) {
-            $values[$flags[$index]] = $booleanFlags[$index] == '1' ? true : false;
+            $values[$flags[$index]] = $booleanFlags[$index] == '1' ? 1 : 0;
         }
 
         return $values;
@@ -179,11 +179,11 @@ class ImageUrlHandler
 
         foreach($flags as $flagIdentifier) {
             if(isset($configuration[$flagIdentifier]) and $configuration[$flagIdentifier]) {
-                $result .= '1';
+                $result .= 1;
                 continue;
             }
 
-            $result .= '0';
+            $result .= 0;
         }
 
         return $result;
