@@ -17,7 +17,7 @@ class Image extends \Magento\Catalog\Helper\Image
     protected $fileSizeRepository;
 
     /**
-     * @var Configuration
+     * @var \MageSuite\LazyResize\Helper\Configuration
      */
     protected $configuration;
 
@@ -50,7 +50,13 @@ class Image extends \Magento\Catalog\Helper\Image
             return $this->getPlaceholderUrl();
         }
 
-        return $this->getMediaBaseUrl() . $this->getUrlBuilder()->generateUrl($attributes);
+        try {
+            return $this->getMediaBaseUrl() . $this->getUrlBuilder()->generateUrl($attributes);
+        } catch (\Exception $e) {
+            $this->_logger->critical($e);
+        }
+
+        return $this->getPlaceholderUrl();
     }
 
     public function getResizedImageInfo()
