@@ -25,11 +25,11 @@ class TokenGenerator
         $key = self::$secretToken .
             sha1($configuration['type']) .
             $configuration['file_size'] .
-            $configuration['width'] .
-            $configuration['height'] .
-            $configuration['aspect_ratio'] .
-            $configuration['transparency'] .
-            $configuration['enable_optimization'] .
+            (int) $configuration['width'] .
+            (int) $configuration['height'] .
+            (int) $configuration['aspect_ratio'] .
+            (int) $configuration['transparency'] .
+            (int) $configuration['enable_optimization'] .
             $configuration['image_file'] .
             $configuration['optimization_level'];
 

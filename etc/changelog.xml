@@ -11,6 +11,13 @@
                     <ticket_id>RK-164</ticket_id>
                 </entry>
             </tag>
+            <tag version="v4.0.7" date="2022-09-05">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix for token generation, force bolean configuration value to int.</overview>
+                    <ticket_id>MGP-1038</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
