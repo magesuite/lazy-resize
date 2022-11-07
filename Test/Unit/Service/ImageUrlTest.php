@@ -25,7 +25,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/e61c9e15e184913133a02c261fe6435d/small_image/500x0/100/80/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/0243508466d8229b6e1e70536751821b/small_image/500x0/100/80/m/a/magento.jpg', $result);
     }
 
     public function testItGeneratesProperUrlBasedOnConfigurationWithFileSize() {
@@ -42,7 +42,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/e61c9e15e184913133a02c261fe6435d/small_image/300/500x0/100/80/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/0243508466d8229b6e1e70536751821b/small_image/300/500x0/100/80/m/a/magento.jpg', $result);
     }
 
     public function testItParsesUrlProperlyWithFileSize()
