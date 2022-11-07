@@ -18,6 +18,13 @@
                     <ticket_id>MGP-1038</ticket_id>
                 </entry>
             </tag>
+            <tag version="v4.0.9" date="2022-09-05">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix for integration/unit tests.</overview>
+                    <ticket_id>MGP-1038</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
