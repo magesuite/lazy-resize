@@ -37,7 +37,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/27b9feaac9e54cd989aa1cc99736483a913ed3efa8f4b4ab70420054/small_image/0/500x0/100/0/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/e11af06b41bcab7aeb2d862eca1dde70c65c76f11a0c679c4803ff79/small_image/0/500x0/100/0/m/a/magento.jpg', $result);
     }
 
     /**
@@ -59,7 +59,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'image_file' => '/m/a/magento.jpg'
         ]);
 
-        $this->assertEquals('catalog/product/thumbnail/fd7d0c64c8957b31fe0cabc9fc049ab052d6c03d86d14ff64b3f6766/small_image/300/500x0/100/0/m/a/magento.jpg', $result);
+        $this->assertEquals('catalog/product/thumbnail/10a9ab7f13e8fd6d635b170074fe70d7b585e617e19a38dbbdbd77cb/small_image/300/500x0/100/0/m/a/magento.jpg', $result);
     }
 
     public function testItParsesUrlProperlyWithFileSize()
