@@ -25,6 +25,6 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
             'optimization_level' => 80
         ]);
 
-        $this->assertEquals('e61c9e15e184913133a02c261fe6435d', $result);
+        $this->assertEquals('0243508466d8229b6e1e70536751821b', $result);
     }
 }

@@ -11,11 +11,11 @@ class TokenGenerator
         return md5(
             $this->getSecret() .
             sha1($configuration['type']) .
-            $configuration['width'] .
-            $configuration['height'] .
-            $configuration['aspect_ratio'] .
-            $configuration['transparency'] .
-            $configuration['enable_optimization'] .
+            (int) $configuration['width'] .
+            (int) $configuration['height'] .
+            (int) $configuration['aspect_ratio'] .
+            (int) $configuration['transparency'] .
+            (int) $configuration['enable_optimization'] .
             substr($configuration['image_file'], 1, 1) .
             substr($configuration['image_file'], 1, 3) .
             $configuration['optimization_level']
