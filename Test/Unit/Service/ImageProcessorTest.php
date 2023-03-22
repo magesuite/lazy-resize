@@ -20,7 +20,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
      */
     protected $imageResize;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->imageRepository = new \MageSuite\ImageResize\Repository\File();
         $this->imageRepository->setMediaDirectoryPath($this->assetsDirectoryPath);
@@ -36,10 +36,11 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         $this->cleanUpThumbnailsDirectory();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->cleanUpThumbnailsDirectory();
         $this->cleanUpProcessedImagesDirectory();
+        $this->cleanStaticSecretToken();
     }
 
     public function testItResizesImageProperly()
@@ -51,7 +52,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         $this->imageProcessor->process($configuration);
         $this->imageProcessor->save('catalog/product/thumbnail/200x100/l/o/logo.png');
 
-        list($width, $height) = getimagesize($this->assetsDirectoryPath.'/catalog/product/thumbnail/200x100/l/o/logo.png');
+        [$width, $height] = getimagesize($this->assetsDirectoryPath . '/catalog/product/thumbnail/200x100/l/o/logo.png');
 
         $this->assertEquals(200, $width);
         $this->assertEquals(100, $height);
@@ -66,7 +67,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         $this->imageProcessor->process($configuration);
         $this->imageProcessor->save('catalog/product/thumbnail/200x100/l/o/logo.png');
 
-        $image = imagecreatefrompng($this->assetsDirectoryPath.'/catalog/product/thumbnail/200x100/l/o/logo.png');
+        $image = imagecreatefrompng($this->assetsDirectoryPath . '/catalog/product/thumbnail/200x100/l/o/logo.png');
         $rgba = imagecolorat($image, 0, 0);
         $colors = imagecolorsforindex($image, $rgba);
 
@@ -74,7 +75,7 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
             'red' => 0,
             'green' => 0,
             'blue' => 0,
-            'alpha' => 127
+            'alpha' => 127,
         ], $colors);
     }
 
@@ -99,5 +100,11 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
         if (file_exists($this->assetsDirectoryPath . '/l')) {
             $this->deleteDirectory($this->assetsDirectoryPath . '/l');
         }
+    }
+
+    protected function cleanStaticSecretToken(): void
+    {
+        $reflection = new \ReflectionClass(\MageSuite\LazyResize\Service\TokenGenerator::class);
+        $reflection->getProperty('secretToken')->setValue(null);
     }
 }
