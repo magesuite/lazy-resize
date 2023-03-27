@@ -14,7 +14,7 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
      */
     protected $tokenSecretProviderStub;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->tokenSecretProviderStub = $this->getMockBuilder(\MageSuite\LazyResize\Service\Resize\TokenSecretProvider::class)
             ->disableOriginalConstructor()
@@ -23,6 +23,12 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
         $this->tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator(
             $this->tokenSecretProviderStub
         );
+    }
+
+    protected function tearDown(): void
+    {
+        $reflection = new \ReflectionClass(\MageSuite\LazyResize\Service\TokenGenerator::class);
+        $reflection->getProperty('secretToken')->setValue(null);
     }
 
     public function testItGeneratesProperToken()
