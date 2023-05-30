@@ -44,6 +44,11 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     protected $mediaConfig;
 
     /**
+     * @var \Magento\Framework\View\Asset\ContextInterface
+     */
+    protected $context;
+
+    /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
