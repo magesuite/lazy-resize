@@ -5,7 +5,7 @@ namespace MageSuite\LazyResize\Controller;
 class Resize
 {
     const PLACEHOLDER_LOCATION = '/media/placeholders/%s.png';
-    
+
     /**
      * @var \MageSuite\LazyResize\Service\TokenGenerator
      */

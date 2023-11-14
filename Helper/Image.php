@@ -40,7 +40,7 @@ class Image extends \Magento\Catalog\Helper\Image
 
         return $this->mediaBaseUrl . $this->getUrlBuilder()->buildUrl($attributes);
     }
-    
+
     public function getResizedImageInfo()
     {
         return [
@@ -86,7 +86,7 @@ class Image extends \Magento\Catalog\Helper\Image
 
         return $this->mediaBaseUrl .  'catalog/product/placeholder/' . $placeholderPathFromConfig;
     }
-    
+
     protected function applyScheduledActions()
     {
         return $this;

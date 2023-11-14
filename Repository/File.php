@@ -27,7 +27,7 @@ class File implements Image
     public function getOriginalImage($path)
     {
         $contents = @file_get_contents($this->mediaDirectoryPath . '/catalog/product' . $path);
-        
+
         if($contents === false) {
             throw new \MageSuite\LazyResize\Exception\OriginalImageNotFound();
         }
