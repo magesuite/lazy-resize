@@ -4,10 +4,17 @@ namespace MageSuite\LazyResize\Model\Catalog\View\Asset;
 
 class Image implements \Magento\Framework\View\Asset\LocalInterface
 {
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+    protected \Magento\Catalog\Model\Product\Media\ConfigInterface $mediaConfig;
+    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
+    protected \Magento\Framework\View\Asset\ContextInterface $context;
+    protected \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository;
+    protected \MageSuite\LazyResize\Helper\Configuration $configuration;
+    protected \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler;
+    protected string $contentType = 'image';
+    protected $urlBuilder = null;
+
+    protected static array $urlCache;
 
     /**
      * @var string
@@ -27,52 +34,11 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     protected $filePath;
 
     /**
-     * @var string
-     */
-    protected $contentType = 'image';
-
-    /**
      * Misc image params depend on size, transparency, quality, watermark etc.
-     *
-     * @var array
      */
-    protected $miscParams;
+    protected array $miscParams;
 
     /**
-     * @var \Magento\Catalog\Model\Product\Media\ConfigInterface
-     */
-    protected $mediaConfig;
-
-    /**
-     * @var \Magento\Framework\View\Asset\ContextInterface
-     */
-    protected $context;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    protected $urlBuilder = null;
-
-    /**
-     * @var \MageSuite\LazyResize\Model\FileSizeRepository
-     */
-    protected $fileSizeRepository;
-
-    /**
-     * @var \MageSuite\LazyResize\Helper\Configuration
-     */
-    protected $configuration;
-
-    /**
-     * Image constructor.
-     * @param \Magento\Catalog\Model\Product\Media\ConfigInterface $mediaConfig
-     * @param \Magento\Framework\View\Asset\ContextInterface $context
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param $filePath
-     * @param array $miscParams
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function __construct(
@@ -81,6 +47,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository,
         \MageSuite\LazyResize\Helper\Configuration $configuration,
+        \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler,
         $filePath,
         array $miscParams
     ) {
@@ -99,6 +66,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
         $this->fileSizeRepository = $fileSizeRepository;
         $this->configuration = $configuration;
+        $this->imageUrlHandler = $imageUrlHandler;
     }
 
     /**
@@ -111,34 +79,23 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContentType()
     {
         return $this->contentType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->getContext()->getPath() . DIRECTORY_SEPARATOR . str_replace('catalog/product/', '', $this->getImageInfo());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSourceFile()
+    public function getSourceFile(): string
     {
         return $this->mediaConfig->getBaseMediaPath()
             . DIRECTORY_SEPARATOR . ltrim($this->getFilePath(), DIRECTORY_SEPARATOR);
     }
 
     /**
-     * Get source content type
-     *
      * @return string
      */
     public function getSourceContentType()
@@ -146,35 +103,22 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         return $this->sourceContentType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContent()
     {
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFilePath()
     {
         return $this->filePath;
     }
 
-    /**
-     * {@inheritdoc}
-     * @return ContextInterface
-     */
-    public function getContext()
+    public function getContext(): \Magento\Framework\View\Asset\ContextInterface
     {
         return $this->context;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getModule()
+    public function getModule(): string
     {
         return 'cache';
     }
@@ -187,11 +131,12 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     public function getImageInfo()
     {
         $attributes = $this->getAttributes();
+        $attributeHash = md5(serialize($attributes));
 
-        return $this->getUrlBuilder()->generateUrl($attributes);
+        return self::$urlCache[$attributeHash] ??= $this->getUrlBuilder()->generateUrl($attributes);
     }
 
-    protected function getAttributes()
+    protected function getAttributes(): array
     {
         $imageFile = $this->getFilePath();
 
@@ -216,17 +161,17 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
             return $this->urlBuilder;
         }
 
-        return new \MageSuite\LazyResize\Service\ImageUrlHandler();
+        return $this->imageUrlHandler;
     }
 
-    public function setUrlBuilder($urlBuilder)
+    public function setUrlBuilder($urlBuilder): static
     {
         $this->urlBuilder = $urlBuilder;
 
         return $this;
     }
 
-    private function returnFormattedStringValue($value)
+    private function returnFormattedStringValue($value): string
     {
         return $value ? '1' : '0';
     }

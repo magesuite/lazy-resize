@@ -4,16 +4,12 @@ namespace MageSuite\LazyResize\Service;
 
 class ImageUrlHandler
 {
-    /**
-     * @var string $url
-     */
-    protected $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
-    protected $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    protected \Symfony\Component\Routing\RouteCollection $routes;
+    protected \Symfony\Component\Routing\RequestContext $requestContext;
 
-    /**
-     * @var array $parts
-     */
-    protected $parts = [
+    protected string $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    protected string $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    protected array $parts = [
         'type' => '[a-z_]+',
         'width_and_height' => '([0-9]{1,4})x([0-9]{1,4})',
         'boolean_flags' => '[0|1]{3}',
@@ -24,16 +20,6 @@ class ImageUrlHandler
         'second_letter' => '[^/]',
         'image_file_path' => '[^/]+'
     ];
-
-    /**
-     * @var \Symfony\Component\Routing\RouteCollection $routes
-     */
-    protected $routes;
-
-    /**
-     * @var \Symfony\Component\Routing\RequestContext $requestContext
-     */
-    protected $requestContext;
 
     public function __construct()
     {
@@ -127,7 +113,7 @@ class ImageUrlHandler
         return preg_replace('/(\/index.php)?\/media\//i', '', $generator->generate('resize_with_file_size', $configuration));
     }
 
-    protected function parseWidthAndHeight($widthAndHeight)
+    protected function parseWidthAndHeight($widthAndHeight): array
     {
         list($width, $height) = explode('x', $widthAndHeight);
 
@@ -137,7 +123,7 @@ class ImageUrlHandler
         ];
     }
 
-    protected function parseBooleanFlags($booleanFlags)
+    protected function parseBooleanFlags($booleanFlags): array
     {
         $flags = [
             'aspect_ratio',
@@ -155,7 +141,7 @@ class ImageUrlHandler
         return $values;
     }
 
-    protected function buildWidthAndHeight($configuration)
+    protected function buildWidthAndHeight($configuration): string
     {
         $width = isset($configuration['width']) ? (int)$configuration['width'] : 0;
         $height = isset($configuration['height']) ? (int)$configuration['height'] : 0;
@@ -163,7 +149,7 @@ class ImageUrlHandler
         return sprintf('%sx%s', $width, $height);
     }
 
-    protected function buildBooleanFlags($configuration)
+    protected function buildBooleanFlags($configuration): string
     {
         $flags = [
             'aspect_ratio',
