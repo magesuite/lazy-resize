@@ -3,5 +3,8 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <table name="catalog_product_entity_media_gallery">
         <column xsi:type="int" name="file_size" unsigned="true" nullable="false" default="0" comment="Image file size in bytes"/>
+        <index referenceId="CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE" indexType="btree">
+            <column name="value"/>
+        </index>
     </table>
 </schema>
