@@ -25,6 +25,13 @@
                     <ticket_id>MGP-1038</ticket_id>
                 </entry>
             </tag>
+            <tag version="v4.0.14" date="2024-02-28">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Introduce resized vesions of product images in product edit form</overview>
+                    <ticket_id>RK-1331</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
