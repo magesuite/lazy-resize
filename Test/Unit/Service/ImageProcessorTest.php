@@ -105,6 +105,6 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
     protected function cleanStaticSecretToken(): void
     {
         $reflection = new \ReflectionClass(\MageSuite\LazyResize\Service\TokenGenerator::class);
-        $reflection->getProperty('secretToken')->setValue(null);
+        $reflection->setStaticPropertyValue('secretToken', null);
     }
 }

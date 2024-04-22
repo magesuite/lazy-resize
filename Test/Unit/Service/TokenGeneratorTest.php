@@ -28,7 +28,7 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
     protected function tearDown(): void
     {
         $reflection = new \ReflectionClass(\MageSuite\LazyResize\Service\TokenGenerator::class);
-        $reflection->getProperty('secretToken')->setValue(null);
+        $reflection->setStaticPropertyValue('secretToken', null);
     }
 
     public function testItGeneratesProperToken()
