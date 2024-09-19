@@ -32,7 +32,10 @@ class ResizeApplication
             new \MageSuite\LazyResize\Service\ImageProcessor(
                 new \MageSuite\ImageResize\Service\Image\Resize(
                     new \MageSuite\ImageResize\Repository\File(),
-                    new \MageSuite\ImageResize\Service\Image\Watermark(new \MageSuite\ImageResize\Repository\File())
+                    new \MageSuite\ImageResize\Service\Image\Watermark(
+                        new \MageSuite\ImageResize\Repository\File(),
+                        new \MageSuite\ImageResize\Model\WatermarkConfiguration()
+                    )
                 )
             )
         );
