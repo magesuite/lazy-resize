@@ -4,29 +4,22 @@ namespace MageSuite\LazyResize\Test\Unit\Service;
 
 class ImageProcessorTest extends \PHPUnit\Framework\TestCase
 {
-    protected $assetsDirectoryPath = __DIR__ . '/../assets';
-    /**
-     * @var \MageSuite\LazyResize\Service\ImageProcessor
-     */
-    protected $imageProcessor;
+    protected string $assetsDirectoryPath = __DIR__ . '/../assets';
 
-    /**
-     * @var \MageSuite\ImageResize\Repository\ImageInterface
-     */
-    protected $imageRepository;
-
-    /**
-     * @var \MageSuite\ImageResize\Service\Image\Resize
-     */
-    protected $imageResize;
+    protected ?\MageSuite\LazyResize\Service\ImageProcessor $imageProcessor;
+    protected ?\MageSuite\ImageResize\Repository\ImageInterface $imageRepository;
+    protected ?\MageSuite\ImageResize\Service\Image\Resize $imageResize;
+    protected ?\MageSuite\ImageResize\Service\Image\Watermark $watermark;
 
     protected function setUp(): void
     {
         $this->imageRepository = new \MageSuite\ImageResize\Repository\File();
         $this->imageRepository->setMediaDirectoryPath($this->assetsDirectoryPath);
+        $this->watermark = new \MageSuite\ImageResize\Service\Image\Watermark($this->imageRepository);
 
         $this->imageResize = new \MageSuite\ImageResize\Service\Image\Resize(
-            $this->imageRepository
+            $this->imageRepository,
+                   $this->watermark
         );
 
         $this->imageProcessor = new \MageSuite\LazyResize\Service\ImageProcessor(

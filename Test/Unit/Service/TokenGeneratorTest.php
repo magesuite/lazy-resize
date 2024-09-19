@@ -4,15 +4,8 @@ namespace MageSuite\LazyResize\Test\Unit\Service;
 
 class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \MageSuite\LazyResize\Service\TokenGenerator
-     */
-    protected $tokenGenerator;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $tokenSecretProviderStub;
+    protected ?\MageSuite\LazyResize\Service\TokenGenerator $tokenGenerator;
+    protected ?\MageSuite\LazyResize\Service\Resize\TokenSecretProvider $tokenSecretProviderStub;
 
     protected function setUp(): void
     {

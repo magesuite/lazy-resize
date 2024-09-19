@@ -10,17 +10,14 @@ class Configuration
 
     const DEFAULT_TOKEN_SECRET = 'f8f9fb44b4d7c6fe7ecef7091d475170';
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
 
     public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
     }
 
-    public function isOptimizationEnabled()
+    public function isOptimizationEnabled(): bool
     {
         return $this->scopeConfig->isSetFlag(self::XML_PATH_ENABLE_OPTIMIZATION);
     }

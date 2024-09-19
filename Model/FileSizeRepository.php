@@ -4,20 +4,13 @@ namespace MageSuite\LazyResize\Model;
 
 class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepositoryInterface
 {
-    /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface
-     */
-    protected $connection = null;
+    protected \Magento\Framework\DB\Adapter\AdapterInterface $connection;
+    protected \MageSuite\LazyResize\Model\Cache\ClearCacheForProductsWithUpdatedImages $clearCacheForProductsWithUpdatedImages;
 
     /**
      * @var int[]
      */
-    protected $fileSizes = [];
-
-    /**
-     * @var Cache\ClearCacheForProductsWithUpdatedImages
-     */
-    protected $clearCacheForProductsWithUpdatedImages;
+    protected array $fileSizes = [];
 
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resourceConnection,
@@ -27,12 +20,12 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
         $this->clearCacheForProductsWithUpdatedImages = $clearCacheForProductsWithUpdatedImages;
     }
 
-    public function addFileSize($filePath, $fileSize)
+    public function addFileSize($filePath, $fileSize): void
     {
         $this->fileSizes[$filePath] = (int)$fileSize;
     }
 
-    public function getFileSize($filePath)
+    public function getFileSize($filePath): int
     {
         if (empty($filePath)) {
             return 0;
@@ -52,7 +45,7 @@ class FileSizeRepository implements \MageSuite\LazyResize\Api\FileSizeRepository
         return $this->fileSizes[$filePath];
     }
 
-    public function save($fileSizes)
+    public function save($fileSizes): array
     {
         $tableName = $this->connection->getTableName('catalog_product_entity_media_gallery');
 

@@ -52,8 +52,7 @@ class Resize
                 200,
                 ['Content-Type' => $this->imageProcessor->getMimeType()]
             );
-        } catch (
-            \MageSuite\ImageResize\Exception\OriginalImageNotFound
+        } catch (\MageSuite\ImageResize\Exception\OriginalImageNotFound
             | \MageSuite\ImageResize\Exception\EmptyImageLoaded
             | \ImagickException $exception
         ) {

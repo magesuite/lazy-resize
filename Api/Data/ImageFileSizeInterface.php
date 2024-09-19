@@ -5,24 +5,24 @@ namespace MageSuite\LazyResize\Api\Data;
 interface ImageFileSizeInterface
 {
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPath();
+    public function getPath(): ?string;
 
     /**
      * @param string $path
      * @return self
      */
-    public function setPath($path);
+    public function setPath(string $path): ImageFileSizeInterface;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getSize();
+    public function getSize(): ?int;
 
     /**
      * @param int $size
      * @return self
      */
-    public function setSize($size);
+    public function setSize(int $size): ImageFileSizeInterface;
 }

@@ -4,25 +4,11 @@ namespace MageSuite\LazyResize\Test\Integration\Helper;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
-     */
-    private $productCollectionFactory;
-
-    /**
-     * @var \MageSuite\LazyResize\Helper\Image
-     */
-    protected $imageHelper;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory;
+    protected ?\MageSuite\LazyResize\Helper\Image $imageHelper;
+    protected ?\MageSuite\ImageResize\Model\WatermarkConfiguration $watermarkConfiguration;
 
     public function setUp(): void
     {
@@ -30,6 +16,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->productCollectionFactory = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
+        $this->watermarkConfiguration = $this->objectManager->get(\MageSuite\ImageResize\Model\WatermarkConfiguration::class);
 
         $tokenSecretHelper = $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
         $tokenSecretHelper->prepareTokenSecretForTests();
@@ -49,6 +36,64 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/9ea99c4a6d1211766f1bdb589626bf148472be5eb37b5d0e404b70e3/small_image/1234/240x300/000/0/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     * @magentoConfigFixture current_store design/watermark/small_image_image stores/1/thumb.png
+     * @magentoConfigFixture current_store design/watermark/small_image_size 200x100
+     * @magentoConfigFixture current_store design/watermark/small_image_position top-right
+     * @magentoConfigFixture current_store design/watermark/small_image_imageOpacity 50
+     */
+    public function testItReturnsProperUrlWhenImageHasWatermark()
+    {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
+
+        $this->watermarkConfiguration->setImage('stores/1/thumb.png')
+            ->setPosition('top-right')
+            ->setOpacity(50)
+            ->setSize('200x100');
+
+        $expectedUrl = sprintf(
+            'http://localhost/media/catalog/product/thumbnail/9ea99c4a6d1211766f1bdb589626bf148472be5eb37b5d0e404b70e3/small_image/1234/240x300/000/0/%s/m/a/magento_image.jpg',
+            $this->watermarkConfiguration
+        );
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     * @magentoConfigFixture current_store design/watermark/small_image_image stores/1/thumb.png
+     * @magentoConfigFixture current_store design/watermark/small_image_position top-right
+     * @magentoConfigFixture current_store design/watermark/small_image_imageOpacity 50
+     */
+    public function testItReturnsProperUrlWhenImageHasWatermarkConfiguredPartially()
+    {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
+
+        $this->watermarkConfiguration->setImage('stores/1/thumb.png')
+            ->setPosition('top-right')
+            ->setOpacity(50);
+
+        $this->assertEquals('', (string)$this->watermarkConfiguration);
         $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/9ea99c4a6d1211766f1bdb589626bf148472be5eb37b5d0e404b70e3/small_image/1234/240x300/000/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
