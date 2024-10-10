@@ -9,24 +9,27 @@ class Image extends \Magento\Catalog\Helper\Image
     protected \Magento\Store\Model\StoreManagerInterface $storeManager;
     protected \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository;
     protected \MageSuite\LazyResize\Helper\Configuration $configuration;
-    protected \MageSuite\ImageResize\Model\WatermarkConfigurationFactory $watermarkConfigurationFactory;
+    protected Configuration\DesignConfiguration $designConfiguration;
+    protected \MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder;
 
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Catalog\Model\Product\ImageFactory $productImageFactory,
-        \Magento\Framework\View\Asset\Repository $assetRepo,
-        \Magento\Framework\View\ConfigInterface $viewConfig,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\App\Helper\Context                 $context,
+        \Magento\Catalog\Model\Product\ImageFactory           $productImageFactory,
+        \Magento\Framework\View\Asset\Repository              $assetRepo,
+        \Magento\Framework\View\ConfigInterface               $viewConfig,
+        \Magento\Store\Model\StoreManagerInterface            $storeManager,
         \MageSuite\LazyResize\Api\FileSizeRepositoryInterface $fileSizeRepository,
-        \MageSuite\LazyResize\Helper\Configuration $configuration,
-        \MageSuite\ImageResize\Model\WatermarkConfigurationFactory $watermarkConfigurationFactory
+        \MageSuite\LazyResize\Helper\Configuration            $configuration,
+        Configuration\DesignConfiguration                     $designConfiguration,
+        \MageSuite\LazyResize\Service\WatermarkBuilder        $watermarkBuilder
     ) {
         parent::__construct($context, $productImageFactory, $assetRepo, $viewConfig);
 
         $this->storeManager = $storeManager;
         $this->fileSizeRepository = $fileSizeRepository;
         $this->configuration = $configuration;
-        $this->watermarkConfigurationFactory = $watermarkConfigurationFactory;
+        $this->designConfiguration = $designConfiguration;
+        $this->watermarkBuilder = $watermarkBuilder;
     }
 
     public function getUrlBuilder(): \MageSuite\LazyResize\Service\ImageUrlHandler
@@ -89,11 +92,13 @@ class Image extends \Magento\Catalog\Helper\Image
             return null;
         }
 
-        $watermark = $this->watermarkConfigurationFactory->create();
-        $watermark->setImage($this->getWatermark())
+        $watermark = $this->watermarkBuilder->create((string)$this->getWatermark(), (string)$this->getType());
+        $watermark
             ->setPosition($this->getWatermarkPosition())
             ->setOpacity($this->getWatermarkImageOpacity())
-            ->setSize($this->getWatermarkSize());
+            ->setSize($this->getWatermarkSize())
+            ->setOffsetX($this->designConfiguration->getWatermarkOffsetX($this->getType()))
+            ->setOffsetY($this->designConfiguration->getWatermarkOffsetX($this->getType()));
 
         return $watermark;
     }

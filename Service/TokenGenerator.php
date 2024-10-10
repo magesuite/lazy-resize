@@ -30,6 +30,7 @@ class TokenGenerator
             (int) $configuration['aspect_ratio'] .
             (int) $configuration['transparency'] .
             (int) $configuration['enable_optimization'] .
+            (isset($configuration['watermark']) ? (string)$configuration['watermark']: '') .
             $configuration['image_file'] .
             $configuration['optimization_level'];
 

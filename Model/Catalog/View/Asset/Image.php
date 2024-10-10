@@ -20,7 +20,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
      * Image type of image (thumbnail,small_image,image,swatch_image,swatch_thumb)
      */
     protected $sourceContentType;
-    protected \MageSuite\ImageResize\Model\WatermarkConfigurationFactory $watermarkConfigurationFactory;
+    protected \MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder;
     protected string $filePath;
     protected array $miscParams;
 
@@ -34,7 +34,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository,
         \MageSuite\LazyResize\Helper\Configuration $configuration,
         \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler,
-        \MageSuite\ImageResize\Model\WatermarkConfigurationFactory $watermarkConfigurationFactory,
+        \MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder,
         $filePath,
         array $miscParams
     ) {
@@ -54,7 +54,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         $this->fileSizeRepository = $fileSizeRepository;
         $this->configuration = $configuration;
         $this->imageUrlHandler = $imageUrlHandler;
-        $this->watermarkConfigurationFactory = $watermarkConfigurationFactory;
+        $this->watermarkBuilder = $watermarkBuilder;
     }
 
     /**
@@ -146,12 +146,15 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
 
     protected function getWatermarkConfiguration(): \MageSuite\ImageResize\Model\WatermarkConfiguration
     {
-        $watermark = $this->watermarkConfigurationFactory->create();
-        $watermark->setImage($this->miscParams['watermark_file'] ?? null)
+        $watermarkFile = $this->miscParams['watermark_file'] ?? '';
+        $watermark = $this->watermarkBuilder->create($watermarkFile, $this->getContentType());
+        $watermark
             ->setPosition($this->miscParams['watermark_position'] ?? null)
             ->setOpacity($this->miscParams['watermark_image_opacity'] ?? null)
             ->setWidth($this->miscParams['watermark_width'] ?? null)
-            ->setHeight($this->miscParams['watermark_height'] ?? null);
+            ->setHeight($this->miscParams['watermark_height'] ?? null)
+            ->setOffsetX($this->miscParams['watermark_offset_x'] ?? null)
+            ->setOffsetY($this->miscParams['watermark_offset_y'] ?? null);
 
         return $watermark;
     }

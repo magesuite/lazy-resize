@@ -8,10 +8,10 @@ class ImageUrlHandler
     protected \Symfony\Component\Routing\RequestContext $requestContext;
 
     protected string $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
-    protected string $urlWatermark = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{watermark}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
+    protected string $urlWatermark = '/media/catalog/product/thumbnail/{token}/{type}/w-{watermark}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
 
     protected string $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
-    protected string $urlWithFileSizeWatermark = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{watermark}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
+    protected string $urlWithFileSizeWatermark = '/media/catalog/product/thumbnail/{token}/{type}/w-{watermark}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
 
     protected array $parts = [
         'type' => '[a-z_]+',
@@ -23,7 +23,7 @@ class ImageUrlHandler
         'first_letter' => '[^/]',
         'second_letter' => '[^/]',
         'image_file_path' => '[^/]+',
-        'watermark' => '[a-z0-9]*',
+        'watermark' => '[A-Za-z0-9_-]+',
     ];
 
     public function __construct()

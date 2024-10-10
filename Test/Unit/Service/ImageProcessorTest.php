@@ -10,12 +10,14 @@ class ImageProcessorTest extends \PHPUnit\Framework\TestCase
     protected ?\MageSuite\ImageResize\Repository\ImageInterface $imageRepository;
     protected ?\MageSuite\ImageResize\Service\Image\Resize $imageResize;
     protected ?\MageSuite\ImageResize\Service\Image\Watermark $watermark;
+    protected ?\MageSuite\ImageResize\Model\Encoder\WatermarkEncoder $watermarkEncoder;
     protected ?\MageSuite\ImageResize\Model\WatermarkConfiguration $watermarkConfiguration;
 
     protected function setUp(): void
     {
         $this->imageRepository = new \MageSuite\ImageResize\Repository\File();
-        $this->watermarkConfiguration = new \MageSuite\ImageResize\Model\WatermarkConfiguration();
+        $this->watermarkEncoder = new \MageSuite\ImageResize\Model\Encoder\WatermarkEncoder();
+        $this->watermarkConfiguration = new \MageSuite\ImageResize\Model\WatermarkConfiguration($this->watermarkEncoder);
         $this->imageRepository->setMediaDirectoryPath($this->assetsDirectoryPath);
         $this->watermark = new \MageSuite\ImageResize\Service\Image\Watermark($this->imageRepository, $this->watermarkConfiguration);
 

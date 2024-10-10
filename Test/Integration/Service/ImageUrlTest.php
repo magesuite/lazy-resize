@@ -131,6 +131,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
     {
         $watermarkConfiguration = $this->watermarkConfiguration
             ->setImage('stores/1/thumb.png')
+            ->setFilesize(1234)
             ->setPosition('top-right')
             ->setOpacity(50)
             ->setWidth(200)
@@ -148,10 +149,7 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
             'watermark' => $watermarkConfiguration
 
         ]);
-        $expectedUrl = \sprintf(
-            'catalog/product/thumbnail/0456cc204bac5231483ab88761611efd9d4e62d6801c5b1d9bd77736/small_image/0/500x0/000/0/%s/m/a/magento.jpg',
-            $watermarkConfiguration
-        );
+        $expectedUrl = 'catalog/product/thumbnail/5dcdca5c2d7750ac2debc3912333cb6064686db869361f619862c6d8/small_image/w-AAHIAAAAZAAAAIAAAAAAAAAAAADSBAAAEgAAAHN0b3Jlcy8xL3RodW1iLnBuZw/0/500x0/000/0/m/a/magento.jpg'; // phpcs:ignore
 
         $this->assertEquals($expectedUrl, $url);
 
@@ -161,20 +159,20 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
                 'type' => 'small_image',
                 'width' => 500,
                 'height' => 0,
-                'file_size' => '0',
-                'aspect_ratio' => '0',
-                'transparency' => '0',
-                'enable_optimization' => '0',
+                'file_size' => 0,
+                'aspect_ratio' => 0,
+                'transparency' => 0,
+                'enable_optimization' => 0,
                 'optimization_level' => 0,
                 'image_file' => '/m/a/magento.jpg',
-                'token' => '0456cc204bac5231483ab88761611efd9d4e62d6801c5b1d9bd77736',
+                'token' => '5dcdca5c2d7750ac2debc3912333cb6064686db869361f619862c6d8',
                 'width_and_height' => '500x0',
                 'boolean_flags' => '000',
                 'first_letter' => 'm',
                 'second_letter' => 'a',
                 'image_file_path' => 'magento.jpg',
                 '_route' => 'resize_with_file_size_watermark',
-                'watermark' => $watermarkConfiguration->encrypt()
+                'watermark' => $watermarkConfiguration->encode()
             ],
             $matchUrl
         );

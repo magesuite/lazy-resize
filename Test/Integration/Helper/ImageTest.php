@@ -5,18 +5,38 @@ namespace MageSuite\LazyResize\Test\Integration\Helper;
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
     protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Framework\Filesystem\Driver\File $fileDriverMock;
     protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
     protected ?\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory;
     protected ?\MageSuite\LazyResize\Helper\Image $imageHelper;
-    protected ?\MageSuite\ImageResize\Model\WatermarkConfiguration $watermarkConfiguration;
+    protected ?\MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder;
 
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
+        $this->fileDriverMock = $this->createMock(\Magento\Framework\Filesystem\Driver\File::class);
+        $this->fileDriverMock->expects($this->any())
+            ->method('stat')
+            ->willReturn([
+                'size' => 1234
+            ]);
+
+        $this->watermarkBuilder = $this->objectManager->create(
+            \MageSuite\LazyResize\Service\WatermarkBuilder::class,
+            [
+            'fileDriver' => $this->fileDriverMock
+            ]
+        );
+
+        $this->objectManager->addSharedInstance(
+            $this->watermarkBuilder,
+            \MageSuite\LazyResize\Service\WatermarkBuilder::class,
+            true
+        );
+
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->productCollectionFactory = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
-        $this->watermarkConfiguration = $this->objectManager->get(\MageSuite\ImageResize\Model\WatermarkConfiguration::class);
 
         $tokenSecretHelper = $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
         $tokenSecretHelper->prepareTokenSecretForTests();
@@ -59,15 +79,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $this->watermarkConfiguration->setImage('stores/1/thumb.png')
-            ->setPosition('top-right')
-            ->setOpacity(50)
-            ->setSize('200x100');
-
-        $expectedUrl = sprintf(
-            'http://localhost/media/catalog/product/thumbnail/9ea99c4a6d1211766f1bdb589626bf148472be5eb37b5d0e404b70e3/small_image/1234/240x300/000/0/%s/m/a/magento_image.jpg',
-            $this->watermarkConfiguration
-        );
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/3875adaf54e9fcfa8bf3637acb877a82a793cd28ed3b79fb7a671af1/small_image/w-AAHIAAAAZAAAAIAAAAAAAAAAAADSBAAALAAAAGNhdGFsb2cvcHJvZHVjdC93YXRlcm1hcmsvc3RvcmVzLzEvdGh1bWIucG5n/1234/240x300/000/0/m/a/magento_image.jpg'; //phpcs:ignore
 
         $this->assertEquals($expectedUrl, $url);
     }
@@ -89,11 +101,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $url = $this->getImageUrl($product);
         $url = str_replace('pub/', '', $url);
 
-        $this->watermarkConfiguration->setImage('stores/1/thumb.png')
-            ->setPosition('top-right')
-            ->setOpacity(50);
-
-        $this->assertEquals('', (string)$this->watermarkConfiguration);
         $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/9ea99c4a6d1211766f1bdb589626bf148472be5eb37b5d0e404b70e3/small_image/1234/240x300/000/0/m/a/magento_image.jpg';
 
         $this->assertEquals($expectedUrl, $url);
