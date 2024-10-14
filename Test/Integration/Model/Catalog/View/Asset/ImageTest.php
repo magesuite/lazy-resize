@@ -19,6 +19,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
             ->willReturn([
                 'size' => 1234
             ]);
+        $this->fileDriverMock->method('isFile')->willReturn(true);
 
         $this->watermarkBuilder = $this->objectManager->create(
             \MageSuite\LazyResize\Service\WatermarkBuilder::class,

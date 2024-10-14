@@ -55,11 +55,17 @@ class WatermarkBuilder
         $fileRelativePath = join(DIRECTORY_SEPARATOR, [$uploadDir, $file]);
 
         try {
+            if (!$this->fileDriver->isFile($mediaDirectory . DIRECTORY_SEPARATOR . $fileRelativePath)) {
+                $this->fileCache[$fileCacheKey] = null;
+                return null;
+            }
+
             $stat = $this->fileDriver->stat($mediaDirectory . DIRECTORY_SEPARATOR . $fileRelativePath);
             $this->fileCache[$fileCacheKey] = [
                 'path' => $fileRelativePath,
                 'size' => $stat['size']
             ];
+            
             return $this->fileCache[$fileCacheKey];
         } catch (\Magento\Framework\Exception\FileSystemException $e) {
             ; // do nothing
