@@ -4,16 +4,15 @@ namespace MageSuite\LazyResize\Test\Integration\Service;
 
 class ImageUrlTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler
-     */
-    protected $imageUrlHandler;
+    protected ?\MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler;
+    protected ?\MageSuite\ImageResize\Model\WatermarkConfiguration $watermarkConfiguration;
 
     public function setUp(): void
     {
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->imageUrlHandler = $objectManager->get(\MageSuite\LazyResize\Service\ImageUrlHandler::class);
+        $this->watermarkConfiguration = $objectManager->get(\MageSuite\ImageResize\Model\WatermarkConfiguration::class);
 
         $tokenSecretHelper = $objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
         $tokenSecretHelper->prepareTokenSecretForTests();
@@ -123,6 +122,57 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
                 'second_letter' => 'a',
                 'image_file_path' => 'magento.jpg',
                 '_route' => 'resize_with_file_size',
+            ],
+            $matchUrl
+        );
+    }
+
+    public function testItGeneratesProperUrlWithWatermarkParameters()
+    {
+        $watermarkConfiguration = $this->watermarkConfiguration
+            ->setImage('stores/1/thumb.png')
+            ->setFilesize(1234)
+            ->setPosition('top-right')
+            ->setOpacity(50)
+            ->setWidth(200)
+            ->setHeight(100);
+
+        $url = $this->imageUrlHandler->generateUrl([
+            'type' => 'small_image',
+            'width' => 500,
+            'height' => 0,
+            'aspect_ratio' => '0',
+            'transparency' => '0',
+            'enable_optimization' => '0',
+            'optimization_level' => 0,
+            'image_file' => '/m/a/magento.jpg',
+            'watermark' => $watermarkConfiguration
+
+        ]);
+        $expectedUrl = 'catalog/product/thumbnail/5dcdca5c2d7750ac2debc3912333cb6064686db869361f619862c6d8/small_image/w-AAHIAAAAZAAAAIAAAAAAAAAAAADSBAAAEgAAAHN0b3Jlcy8xL3RodW1iLnBuZw/0/500x0/000/0/m/a/magento.jpg'; // phpcs:ignore
+
+        $this->assertEquals($expectedUrl, $url);
+
+        $matchUrl = $this->imageUrlHandler->matchUrl('/media/' . $expectedUrl);
+        $this->assertEquals(
+            [
+                'type' => 'small_image',
+                'width' => 500,
+                'height' => 0,
+                'file_size' => 0,
+                'aspect_ratio' => 0,
+                'transparency' => 0,
+                'enable_optimization' => 0,
+                'optimization_level' => 0,
+                'image_file' => '/m/a/magento.jpg',
+                'token' => '5dcdca5c2d7750ac2debc3912333cb6064686db869361f619862c6d8',
+                'width_and_height' => '500x0',
+                'boolean_flags' => '000',
+                'first_letter' => 'm',
+                'second_letter' => 'a',
+                'image_file_path' => 'magento.jpg',
+                '_route' => 'resize_with_file_size_watermark',
+                'watermark' => $watermarkConfiguration->encode()
             ],
             $matchUrl
         );

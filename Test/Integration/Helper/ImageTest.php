@@ -4,29 +4,37 @@ namespace MageSuite\LazyResize\Test\Integration\Helper;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
-     */
-    private $productCollectionFactory;
-
-    /**
-     * @var \MageSuite\LazyResize\Helper\Image
-     */
-    protected $imageHelper;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Framework\Filesystem\Driver\File $fileDriverMock;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory;
+    protected ?\MageSuite\LazyResize\Helper\Image $imageHelper;
+    protected ?\MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder;
 
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
+        $this->fileDriverMock = $this->createMock(\Magento\Framework\Filesystem\Driver\File::class);
+        $this->fileDriverMock->expects($this->any())
+            ->method('stat')
+            ->willReturn([
+                'size' => 1234
+            ]);
+        $this->fileDriverMock->method('isFile')->willReturn(true);
+
+        $this->watermarkBuilder = $this->objectManager->create(
+            \MageSuite\LazyResize\Service\WatermarkBuilder::class,
+            [
+            'fileDriver' => $this->fileDriverMock
+            ]
+        );
+
+        $this->objectManager->addSharedInstance(
+            $this->watermarkBuilder,
+            \MageSuite\LazyResize\Service\WatermarkBuilder::class,
+            true
+        );
+
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->productCollectionFactory = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
@@ -43,6 +51,51 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture setFileSize
      */
     public function testItReturnsProperUrlWhenImageIsDefined()
+    {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
+
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/9ea99c4a6d1211766f1bdb589626bf148472be5eb37b5d0e404b70e3/small_image/1234/240x300/000/0/m/a/magento_image.jpg';
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     * @magentoConfigFixture current_store design/watermark/small_image_image stores/1/thumb.png
+     * @magentoConfigFixture current_store design/watermark/small_image_size 200x100
+     * @magentoConfigFixture current_store design/watermark/small_image_position top-right
+     * @magentoConfigFixture current_store design/watermark/small_image_imageOpacity 50
+     */
+    public function testItReturnsProperUrlWhenImageHasWatermark()
+    {
+        $product = $this->productRepository->get('simple');
+
+        $url = $this->getImageUrl($product);
+        $url = str_replace('pub/', '', $url);
+
+        $expectedUrl = 'http://localhost/media/catalog/product/thumbnail/3875adaf54e9fcfa8bf3637acb877a82a793cd28ed3b79fb7a671af1/small_image/w-AAHIAAAAZAAAAIAAAAAAAAAAAADSBAAALAAAAGNhdGFsb2cvcHJvZHVjdC93YXRlcm1hcmsvc3RvcmVzLzEvdGh1bWIucG5n/1234/240x300/000/0/m/a/magento_image.jpg'; //phpcs:ignore
+
+        $this->assertEquals($expectedUrl, $url);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
+     * @magentoDataFixture setFileSize
+     * @magentoConfigFixture current_store design/watermark/small_image_image stores/1/thumb.png
+     * @magentoConfigFixture current_store design/watermark/small_image_position top-right
+     * @magentoConfigFixture current_store design/watermark/small_image_imageOpacity 50
+     */
+    public function testItReturnsProperUrlWhenImageHasWatermarkConfiguredPartially()
     {
         $product = $this->productRepository->get('simple');
 

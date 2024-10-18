@@ -7,42 +7,30 @@ class ImageFileSize implements \MageSuite\LazyResize\Api\Data\ImageFileSizeInter
     /**
      * @var string
      */
-    protected $path;
+    protected ?string $path;
 
     /**
      * @var int
      */
-    protected $size;
+    protected ?int $size;
 
-    /**
-     * @inheritDoc
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function setPath($path)
+    public function setPath(string $path): \MageSuite\LazyResize\Api\Data\ImageFileSizeInterface
     {
         $this->path = $path;
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->size;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function setSize($size)
+    public function setSize(int $size): \MageSuite\LazyResize\Api\Data\ImageFileSizeInterface
     {
         $this->size = $size;
         return $this;

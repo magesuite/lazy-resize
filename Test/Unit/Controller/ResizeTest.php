@@ -4,25 +4,10 @@ namespace MageSuite\LazyResize\Test\Unit\Controller;
 
 class ResizeTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \MageSuite\LazyResize\Controller\Resize
-     */
-    protected $controller;
-
-    /**
-     * @var \MageSuite\LazyResize\Service\ImageProcessor|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $imageProcessorDouble;
-
-    /**
-     * @var \MageSuite\LazyResize\Service\TokenGenerator|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $tokenGeneratorDouble;
-
-    /**
-     * @var \MageSuite\LazyResize\Service\ImageUrl $imageUrlHandlerDouble
-     */
-    protected $imageUrlHandlerDouble;
+    protected ?\MageSuite\LazyResize\Controller\Resize $controller;
+    protected ?\MageSuite\LazyResize\Service\ImageProcessor $imageProcessorDouble;
+    protected ?\MageSuite\LazyResize\Service\TokenGenerator $tokenGeneratorDouble;
+    protected ?\MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandlerDouble;
 
     public function setUp(): void
     {

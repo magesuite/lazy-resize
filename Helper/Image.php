@@ -6,43 +6,38 @@ class Image extends \Magento\Catalog\Helper\Image
 {
     const NOT_SELECTED_IMAGE = 'no_selection';
 
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var \MageSuite\LazyResize\Model\FileSizeRepository
-     */
-    protected $fileSizeRepository;
-
-    /**
-     * @var \MageSuite\LazyResize\Helper\Configuration
-     */
-    protected $configuration;
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
+    protected \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository;
+    protected \MageSuite\LazyResize\Helper\Configuration $configuration;
+    protected Configuration\DesignConfiguration $designConfiguration;
+    protected \MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder;
 
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Catalog\Model\Product\ImageFactory $productImageFactory,
-        \Magento\Framework\View\Asset\Repository $assetRepo,
-        \Magento\Framework\View\ConfigInterface $viewConfig,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\App\Helper\Context                 $context,
+        \Magento\Catalog\Model\Product\ImageFactory           $productImageFactory,
+        \Magento\Framework\View\Asset\Repository              $assetRepo,
+        \Magento\Framework\View\ConfigInterface               $viewConfig,
+        \Magento\Store\Model\StoreManagerInterface            $storeManager,
         \MageSuite\LazyResize\Api\FileSizeRepositoryInterface $fileSizeRepository,
-        \MageSuite\LazyResize\Helper\Configuration $configuration
+        \MageSuite\LazyResize\Helper\Configuration            $configuration,
+        Configuration\DesignConfiguration                     $designConfiguration,
+        \MageSuite\LazyResize\Service\WatermarkBuilder        $watermarkBuilder
     ) {
         parent::__construct($context, $productImageFactory, $assetRepo, $viewConfig);
 
         $this->storeManager = $storeManager;
         $this->fileSizeRepository = $fileSizeRepository;
         $this->configuration = $configuration;
+        $this->designConfiguration = $designConfiguration;
+        $this->watermarkBuilder = $watermarkBuilder;
     }
 
-    public function getUrlBuilder()
+    public function getUrlBuilder(): \MageSuite\LazyResize\Service\ImageUrlHandler
     {
         return new \MageSuite\LazyResize\Service\ImageUrlHandler();
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
         $attributes = $this->getAttributes();
 
@@ -59,7 +54,7 @@ class Image extends \Magento\Catalog\Helper\Image
         return $this->getPlaceholderUrl();
     }
 
-    public function getResizedImageInfo()
+    public function getResizedImageInfo(): array
     {
         return [
             $this->getWidth(),
@@ -67,7 +62,7 @@ class Image extends \Magento\Catalog\Helper\Image
         ];
     }
 
-    protected function getAttributes()
+    protected function getAttributes(): array
     {
         $imageFile = $this->getImageFile();
 
@@ -86,11 +81,29 @@ class Image extends \Magento\Catalog\Helper\Image
             'transparency' => $this->returnFormattedStringValue($this->getAttribute('transparency')),
             'enable_optimization' => $this->returnFormattedStringValue($this->configuration->isOptimizationEnabled()),
             'background' => $this->getAttribute('background'),
-            'optimization_level' => $this->configuration->getOptimizationLevel()
+            'optimization_level' => $this->configuration->getOptimizationLevel(),
+            'watermark' => $this->getWatermarkConfiguration()
         ];
     }
 
-    protected function getPlaceholderUrl()
+    protected function getWatermarkConfiguration(): ?\MageSuite\ImageResize\Model\WatermarkConfiguration
+    {
+        if (!$this->getWatermarkSize()) {
+            return null;
+        }
+
+        $watermark = $this->watermarkBuilder->create((string)$this->getWatermark(), (string)$this->getType());
+        $watermark
+            ->setPosition($this->getWatermarkPosition())
+            ->setOpacity($this->getWatermarkImageOpacity())
+            ->setSize($this->getWatermarkSize())
+            ->setOffsetX($this->designConfiguration->getWatermarkOffsetX($this->getType()))
+            ->setOffsetY($this->designConfiguration->getWatermarkOffsetX($this->getType()));
+
+        return $watermark;
+    }
+
+    protected function getPlaceholderUrl(): string
     {
         $destinationSubDir = $this->_getModel()->getDestinationSubdir();
 
@@ -106,17 +119,17 @@ class Image extends \Magento\Catalog\Helper\Image
         return $this->getMediaBaseUrl() . 'catalog/product/placeholder/' . $placeholderPathFromConfig;
     }
 
-    protected function applyScheduledActions()
+    protected function applyScheduledActions(): self
     {
         return $this;
     }
 
-    private function returnFormattedStringValue($value)
+    private function returnFormattedStringValue($value): string
     {
         return $value ? '1' : '0';
     }
 
-    protected function getMediaBaseUrl()
+    protected function getMediaBaseUrl(): string
     {
         return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }

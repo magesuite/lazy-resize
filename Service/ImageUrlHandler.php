@@ -8,7 +8,11 @@ class ImageUrlHandler
     protected \Symfony\Component\Routing\RequestContext $requestContext;
 
     protected string $url = '/media/catalog/product/thumbnail/{token}/{type}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
-    protected string $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}';
+    protected string $urlWatermark = '/media/catalog/product/thumbnail/{token}/{type}/w-{watermark}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
+
+    protected string $urlWithFileSize = '/media/catalog/product/thumbnail/{token}/{type}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
+    protected string $urlWithFileSizeWatermark = '/media/catalog/product/thumbnail/{token}/{type}/w-{watermark}/{file_size}/{width_and_height}/{boolean_flags}/{optimization_level}/{first_letter}/{second_letter}/{image_file_path}'; // phpcs:ignore
+
     protected array $parts = [
         'type' => '[a-z_]+',
         'width_and_height' => '([0-9]{1,4})x([0-9]{1,4})',
@@ -18,7 +22,8 @@ class ImageUrlHandler
         'token' => '[a-z0-9]{56}',
         'first_letter' => '[^/]',
         'second_letter' => '[^/]',
-        'image_file_path' => '[^/]+'
+        'image_file_path' => '[^/]+',
+        'watermark' => '[A-Za-z0-9_-]+',
     ];
 
     public function __construct()
@@ -34,12 +39,28 @@ class ImageUrlHandler
         $routes->add('resize', $route);
 
         $route = new \Symfony\Component\Routing\Route(
+            $this->urlWatermark,
+            [],
+            $this->parts
+        );
+
+        $routes->add('resize_watermark', $route);
+
+        $route = new \Symfony\Component\Routing\Route(
             $this->urlWithFileSize,
             [],
             $this->parts
         );
 
         $routes->add('resize_with_file_size', $route);
+
+        $route = new \Symfony\Component\Routing\Route(
+            $this->urlWithFileSizeWatermark,
+            [],
+            $this->parts
+        );
+
+        $routes->add('resize_with_file_size_watermark', $route);
 
         $this->routes = $routes;
 
@@ -81,6 +102,7 @@ class ImageUrlHandler
     public function generateUrl($configuration)
     {
         $tokenGenerator = new \MageSuite\LazyResize\Service\TokenGenerator();
+        $routeName = 'resize_with_file_size';
 
         if (!isset($configuration['file_size'])) {
             $configuration['file_size'] = 0;
@@ -88,15 +110,19 @@ class ImageUrlHandler
 
         $configuration['width_and_height'] = $this->buildWidthAndHeight($configuration);
         $configuration['boolean_flags'] = $this->buildBooleanFlags($configuration);
-
         $configuration['token'] = $tokenGenerator->generate($configuration);
-
         $configuration['image_file'] = ltrim($configuration['image_file'], '/');
 
         $urlFileParts = explode('/', $configuration['image_file']);
         $urlFileParts = array_combine(['first_letter', 'second_letter', 'image_file_path'], $urlFileParts);
 
         $configuration += $urlFileParts;
+
+        $watermark = $configuration['watermark'] ?? null;
+
+        if (!$watermark?->isValid()) {
+            unset($configuration['watermark']);
+        }
 
         $parts = $this->parts;
 
@@ -110,7 +136,11 @@ class ImageUrlHandler
 
         $generator = new \Symfony\Component\Routing\Generator\UrlGenerator($this->routes, $this->requestContext);
 
-        return preg_replace('/(\/index.php)?\/media\//i', '', $generator->generate('resize_with_file_size', $configuration));
+        if (!empty($configuration['watermark'])) {
+            $routeName = 'resize_with_file_size_watermark';
+        }
+
+        return preg_replace('/(\/index.php)?\/media\//i', '', $generator->generate($routeName, $configuration));
     }
 
     protected function parseWidthAndHeight($widthAndHeight): array

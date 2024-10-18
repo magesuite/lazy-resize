@@ -13,29 +13,15 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     protected \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler;
     protected string $contentType = 'image';
     protected $urlBuilder = null;
-
     protected static array $urlCache;
-
-    /**
-     * @var string
-     */
-    protected $mediaBaseUrl;
+    protected string $mediaBaseUrl;
 
     /**
      * Image type of image (thumbnail,small_image,image,swatch_image,swatch_thumb)
-     *
-     * @var string
      */
     protected $sourceContentType;
-
-    /**
-     * @var string
-     */
-    protected $filePath;
-
-    /**
-     * Misc image params depend on size, transparency, quality, watermark etc.
-     */
+    protected \MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder;
+    protected string $filePath;
     protected array $miscParams;
 
     /**
@@ -48,6 +34,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         \MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository,
         \MageSuite\LazyResize\Helper\Configuration $configuration,
         \MageSuite\LazyResize\Service\ImageUrlHandler $imageUrlHandler,
+        \MageSuite\LazyResize\Service\WatermarkBuilder $watermarkBuilder,
         $filePath,
         array $miscParams
     ) {
@@ -67,19 +54,20 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         $this->fileSizeRepository = $fileSizeRepository;
         $this->configuration = $configuration;
         $this->imageUrlHandler = $imageUrlHandler;
+        $this->watermarkBuilder = $watermarkBuilder;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         $value = $this->mediaBaseUrl . $this->getImageInfo();
 
         return $value;
     }
 
-    public function getContentType()
+    public function getContentType(): string
     {
         return $this->contentType;
     }
@@ -131,7 +119,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
     public function getImageInfo()
     {
         $attributes = $this->getAttributes();
-        $attributeHash = md5(serialize($attributes));
+        $attributeHash = md5(serialize($attributes)); // phpcs:ignore
 
         return self::$urlCache[$attributeHash] ??= $this->getUrlBuilder()->generateUrl($attributes);
     }
@@ -151,8 +139,24 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
             'transparency' => $this->returnFormattedStringValue($this->miscParams['keep_transparency']),
             'enable_optimization' => $this->returnFormattedStringValue($this->configuration->isOptimizationEnabled()),
             'background' => $this->miscParams['background'],
-            'optimization_level' => $this->configuration->getOptimizationLevel()
+            'optimization_level' => $this->configuration->getOptimizationLevel(),
+            'watermark' => $this->getWatermarkConfiguration()
         ];
+    }
+
+    protected function getWatermarkConfiguration(): \MageSuite\ImageResize\Model\WatermarkConfiguration
+    {
+        $watermarkFile = $this->miscParams['watermark_file'] ?? '';
+        $watermark = $this->watermarkBuilder->create($watermarkFile, $this->getContentType());
+        $watermark
+            ->setPosition($this->miscParams['watermark_position'] ?? null)
+            ->setOpacity($this->miscParams['watermark_image_opacity'] ?? null)
+            ->setWidth($this->miscParams['watermark_width'] ?? null)
+            ->setHeight($this->miscParams['watermark_height'] ?? null)
+            ->setOffsetX($this->miscParams['watermark_offset_x'] ?? null)
+            ->setOffsetY($this->miscParams['watermark_offset_y'] ?? null);
+
+        return $watermark;
     }
 
     public function getUrlBuilder()
@@ -164,7 +168,7 @@ class Image implements \Magento\Framework\View\Asset\LocalInterface
         return $this->imageUrlHandler;
     }
 
-    public function setUrlBuilder($urlBuilder): static
+    public function setUrlBuilder($urlBuilder): self
     {
         $this->urlBuilder = $urlBuilder;
 

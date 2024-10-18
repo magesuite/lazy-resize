@@ -4,7 +4,7 @@ namespace MageSuite\LazyResize\Test\Integration;
 
 class TokenSecretHelper
 {
-    public function prepareTokenSecretForTests()
+    public function prepareTokenSecretForTests(): void
     {
         $cacheFilePath = BP . '/var/global/lazy_resize_secret';
 

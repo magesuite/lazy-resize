@@ -3,13 +3,13 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
     <preference for="Magento\Catalog\Helper\Image"
-                type="MageSuite\LazyResize\Helper\Image" />
+                type="MageSuite\LazyResize\Helper\Image"/>
 
     <preference for="Magento\Catalog\Model\View\Asset\Image"
-                type="MageSuite\LazyResize\Model\Catalog\View\Asset\Image" />
+                type="MageSuite\LazyResize\Model\Catalog\View\Asset\Image"/>
 
     <preference for="MageSuite\LazyResize\Api\TokenSecretProviderInterface"
-                type="MageSuite\LazyResize\Service\Magento\TokenSecretProvider" />
+                type="MageSuite\LazyResize\Service\Magento\TokenSecretProvider"/>
 
     <type name="Magento\Catalog\Model\ResourceModel\Product\Gallery">
         <plugin name="add_file_size_column_to_sql_query"
@@ -27,8 +27,45 @@
     </type>
 
     <preference for="MageSuite\LazyResize\Api\FileSizeRepositoryInterface"
-                type="MageSuite\LazyResize\Model\FileSizeRepository" />
+                type="MageSuite\LazyResize\Model\FileSizeRepository"/>
 
     <preference for="MageSuite\LazyResize\Api\Data\ImageFileSizeInterface"
-                type="MageSuite\LazyResize\Model\Data\ImageFileSize" />
+                type="MageSuite\LazyResize\Model\Data\ImageFileSize"/>
+
+    <type name="Magento\Theme\Model\Design\Config\MetadataProvider">
+        <arguments>
+            <argument name="metadata" xsi:type="array">
+                <item name="watermark_image_imageOffsetX" xsi:type="array">
+                    <item name="path" xsi:type="string">design/watermark/watermark_image_imageOffsetX</item>
+                    <item name="fieldset" xsi:type="string">other_settings/watermark/image</item>
+                </item>
+                <item name="watermark_image_imageOffsetY" xsi:type="array">
+                    <item name="path" xsi:type="string">design/watermark/watermark_image_imageOffsetY</item>
+                    <item name="fieldset" xsi:type="string">other_settings/watermark/image</item>
+                </item>
+                <item name="watermark_thumbnail_imageOffsetX" xsi:type="array">
+                    <item name="path" xsi:type="string">design/watermark/watermark_thumbnail_imageOffsetX</item>
+                    <item name="fieldset" xsi:type="string">other_settings/watermark/thumbnail</item>
+                </item>
+                <item name="watermark_thumbnail_imageOffsetY" xsi:type="array">
+                    <item name="path" xsi:type="string">design/watermark/watermark_thumbnail_imageOffsetY</item>
+                    <item name="fieldset" xsi:type="string">other_settings/watermark/thumbnail</item>
+                </item>
+                <item name="watermark_small_image_imageOffsetX" xsi:type="array">
+                    <item name="path" xsi:type="string">design/watermark/watermark_small_image_imageOffsetX</item>
+                    <item name="fieldset" xsi:type="string">other_settings/watermark/small_image</item>
+                </item>
+                <item name="watermark_small_image_imageOffsetY" xsi:type="array">
+                    <item name="path" xsi:type="string">design/watermark/watermark_small_image_imageOffsetY</item>
+                    <item name="fieldset" xsi:type="string">other_settings/watermark/small_image</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Model\Product\Image\ParamsBuilder">
+        <plugin name="add_watermark_offset_params"
+                type="MageSuite\LazyResize\Plugin\Magento\Catalog\Model\Product\Image\ParamsBuilder\AddWatermarkOffsetParams"
+                sortOrder="10"/>
+    </type>
 </config>

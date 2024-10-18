@@ -4,7 +4,6 @@ namespace MageSuite\LazyResize\Test\Unit\Model\Catalog\View\Asset;
 
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
-    const ENABLE_OPTIMIZATION = 0;
     const OPTIMIZATION_LEVEL = 60;
 
     const CORRECT_IMAGE_PATH = 'thumbnail/%s/image/0/400x300/110/0/l/o/logo_correct.png';
@@ -19,34 +18,14 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         'background' => 0
     ];
 
-    /**
-     * @var \Magento\Framework\App\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \MageSuite\LazyResize\Model\Catalog\View\Asset\Image|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $image;
-
-    /**
-     * @var \MageSuite\LazyResize\Service\ImageUrlHandler|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $urlBuilder;
-
-    /**
-     * @var \MageSuite\LazyResize\Model\FileSizeRepository
-     */
-    protected $fileSizeRepository;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $configurationStub;
+    protected ?\Magento\Framework\App\ObjectManager $objectManager;
+    protected ?\MageSuite\LazyResize\Model\Catalog\View\Asset\Image $image;
+    protected ?\MageSuite\LazyResize\Service\ImageUrlHandler $urlBuilder;
+    protected ?\MageSuite\LazyResize\Model\FileSizeRepository $fileSizeRepository;
+    protected ?\MageSuite\LazyResize\Helper\Configuration $configurationStub;
 
     public function setUp(): void
     {
-        /** @var \Magento\Framework\App\ObjectManager objectManager */
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->fileSizeRepository = $this->objectManager->get(\MageSuite\LazyResize\Model\FileSizeRepository::class);
@@ -152,11 +131,11 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->$assertContains('image/4000/400x300/110/60/l/o/logo_wrong.png', $path);
     }
 
-    protected function generateReturnValueMapForScopeConfig()
+    protected function generateReturnValueMapForScopeConfig(): void
     {
         $this->configurationStub
             ->method('isOptimizationEnabled')
-            ->willReturn(self::ENABLE_OPTIMIZATION);
+            ->willReturn(false);
 
         $this->configurationStub
             ->method('getOptimizationLevel')

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="other_settings">
+        <fieldset name="watermark">
+            <fieldset name="image">
+                <field name="watermark_image_imageOffsetX" formElement="input">
+                    <settings>
+                        <validation>
+                            <rule name="validate-number" xsi:type="boolean">true</rule>
+                        </validation>
+                        <dataType>text</dataType>
+                        <label translate="true">Image Offset X</label>
+                        <dataScope>watermark_image_imageOffsetX</dataScope>
+                        <addAfter>px</addAfter>
+                        <additionalClasses>
+                            <class name="cs-csfeature__logo">true</class>
+                        </additionalClasses>
+                    </settings>
+                </field>
+                <field name="watermark_image_imageOffsetY" formElement="input">
+                    <settings>
+                        <validation>
+                            <rule name="validate-number" xsi:type="boolean">true</rule>
+                        </validation>
+                        <dataType>text</dataType>
+                        <label translate="true">Image Offset Y</label>
+                        <dataScope>watermark_image_imageOffsetY</dataScope>
+                        <addAfter>px</addAfter>
+                        <additionalClasses>
+                            <class name="cs-csfeature__logo">true</class>
+                        </additionalClasses>
+                    </settings>
+                </field>
+            </fieldset>
+            <fieldset name="thumbnail">
+                <field name="watermark_thumbnail_imageOffsetX" formElement="input">
+                    <settings>
+                        <validation>
+                            <rule name="validate-number" xsi:type="boolean">true</rule>
+                        </validation>
+                        <dataType>text</dataType>
+                        <label translate="true">Image Offset X</label>
+                        <dataScope>watermark_thumbnail_imageOffsetX</dataScope>
+                        <addAfter>px</addAfter>
+                        <additionalClasses>
+                            <class name="cs-csfeature__logo">true</class>
+                        </additionalClasses>
+                    </settings>
+                </field>
+                <field name="watermark_thumbnail_imageOffsetY" formElement="input">
+                    <settings>
+                        <validation>
+                            <rule name="validate-number" xsi:type="boolean">true</rule>
+                        </validation>
+                        <dataType>text</dataType>
+                        <label translate="true">Image Offset Y</label>
+                        <dataScope>watermark_thumbnail_imageOffsetY</dataScope>
+                        <addAfter>px</addAfter>
+                        <additionalClasses>
+                            <class name="cs-csfeature__logo">true</class>
+                        </additionalClasses>
+                    </settings>
+                </field>
+            </fieldset>
+            <fieldset name="small_image">
+                <field name="watermark_small_image_imageOffsetX" formElement="input">
+                    <settings>
+                        <validation>
+                            <rule name="validate-number" xsi:type="boolean">true</rule>
+                        </validation>
+                        <dataType>text</dataType>
+                        <label translate="true">Image Offset X</label>
+                        <dataScope>watermark_small_image_imageOffsetX</dataScope>
+                        <addAfter>px</addAfter>
+                        <additionalClasses>
+                            <class name="cs-csfeature__logo">true</class>
+                        </additionalClasses>
+                    </settings>
+                </field>
+                <field name="watermark_small_image_imageOffsetY" formElement="input">
+                    <settings>
+                        <validation>
+                            <rule name="validate-number" xsi:type="boolean">true</rule>
+                        </validation>
+                        <dataType>text</dataType>
+                        <label translate="true">Image Offset Y</label>
+                        <dataScope>watermark_small_image_imageOffsetY</dataScope>
+                        <addAfter>px</addAfter>
+                        <additionalClasses>
+                            <class name="cs-csfeature__logo">true</class>
+                        </additionalClasses>
+                    </settings>
+                </field>
+            </fieldset>
+        </fieldset>
+    </fieldset>
+</form>
