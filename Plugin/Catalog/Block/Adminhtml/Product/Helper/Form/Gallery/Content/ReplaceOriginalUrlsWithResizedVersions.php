@@ -37,6 +37,10 @@ class ReplaceOriginalUrlsWithResizedVersions
         $mediaDirectory = $this->filesystem->getDirectoryRead(\Magento\Framework\App\Filesystem\DirectoryList::MEDIA);
 
         foreach ($images as &$image) {
+            if ($image['media_type'] != 'image') {
+                continue;
+            }
+
             $imageHelper = $this->imageHelper->init($product, 'product_page_image_large');
             $imageHelper->setImageFile($image['file']);
 
