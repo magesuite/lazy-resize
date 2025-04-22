@@ -26,15 +26,15 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
+        $allowedMethodName = method_exists(\PHPUnit\Framework\MockObject\MockBuilder::class, 'onlyMethods')
+            ? 'onlyMethods'
+            : 'setMethods';
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
-
         $this->fileSizeRepository = $this->objectManager->get(\MageSuite\LazyResize\Model\FileSizeRepository::class);
-
         $this->urlBuilder = $this->getMockBuilder(\MageSuite\LazyResize\Service\ImageUrlHandler::class)
-            ->setMethods(['generateUrl'])
+            ->$allowedMethodName(['generateUrl'])
             ->disableOriginalConstructor()
             ->getMock();
-
         $this->configurationStub = $this->getMockBuilder(\MageSuite\LazyResize\Helper\Configuration::class)
             ->disableOriginalConstructor()
             ->getMock();

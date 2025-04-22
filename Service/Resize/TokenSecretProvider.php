@@ -8,7 +8,7 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
 
     public function getTokenSecret(): string
     {
-        if (!$this->validateEnvFilePath()) {
+        if (!$this->validateEnvFilePath() || empty($this->getDatabaseConfig())) {
             return \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
         }
 
@@ -45,12 +45,9 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
     {
         $databaseConfig = $this->getDatabaseConfig();
         $tableName = $databaseConfig['table_prefix'] . 'core_config_data';
-
         $connection = $this->getConnection($databaseConfig);
-
         $stmt = $connection->prepare("SELECT value FROM $tableName WHERE path = :path");
         $stmt->execute(['path' => \MageSuite\LazyResize\Helper\Configuration::XML_PATH_TOKEN_SECRET]);
-
         $secret = $stmt->fetchColumn();
 
         return $secret ?: \MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET;
@@ -60,11 +57,7 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
     {
         $path = BP . '/app/etc/env.php';
 
-        if (file_exists($path)) { //phpcs:ignore
-            return true;
-        }
-
-        return false;
+        return file_exists($path); //phpcs:ignore
     }
 
     protected function getConnection($databaseConfig)
@@ -81,6 +74,10 @@ class TokenSecretProvider implements \MageSuite\LazyResize\Api\TokenSecretProvid
     private function getDatabaseConfig(): array
     {
         $config = include BP . '/app/etc/env.php'; //phpcs:ignore
+
+        if (!isset($config['db'])) {
+            return [];
+        }
 
         return [
             'credentials' => $config['db']['connection']['default'],
