@@ -7,7 +7,7 @@
     "AFL-3.0"
   ],
   "require": {
-    "symfony/routing": "^4.2",
+    "symfony/routing": "^7.2",
     "symfony/http-foundation": "^4.2 || ^5.0 || ^6.0",
     "creativestyle/magesuite-image-resize": "^1.0.0"
   },
