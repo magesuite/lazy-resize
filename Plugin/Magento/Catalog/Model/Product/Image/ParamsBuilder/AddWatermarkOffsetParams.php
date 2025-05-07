@@ -13,7 +13,7 @@ class AddWatermarkOffsetParams
         $this->designConfiguration = $designConfiguration;
     }
 
-    public function afterBuild(\Magento\Catalog\Model\Product\Image\ParamsBuilder $subject, array $result, array $imageArguments, int $scopeId = null): array
+    public function afterBuild(\Magento\Catalog\Model\Product\Image\ParamsBuilder $subject, array $result, array $imageArguments, ?int $scopeId = null): array
     {
         $imageType = $result['image_type'] ?? null;
 

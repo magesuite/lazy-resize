@@ -11,7 +11,7 @@ class TokenGenerator
 
     protected static $secretToken = null;
 
-    public function __construct(\MageSuite\LazyResize\Api\TokenSecretProviderInterface $tokenSecretProvider = null)
+    public function __construct(?\MageSuite\LazyResize\Api\TokenSecretProviderInterface $tokenSecretProvider = null)
     {
         $this->tokenSecretProvider = $tokenSecretProvider ?: new \MageSuite\LazyResize\Service\Resize\TokenSecretProvider();
     }
