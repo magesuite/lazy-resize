@@ -23,7 +23,7 @@ class TokenGenerator
         }
 
         $key = self::$secretToken .
-            sha1($configuration['type']) .
+            sha1($configuration['type'] ?? '') .
             $configuration['file_size'] .
             (int) $configuration['width'] .
             (int) $configuration['height'] .
