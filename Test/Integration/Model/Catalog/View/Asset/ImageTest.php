@@ -1,7 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\LazyResize\Test\Integration\Model\Catalog\View\Asset;
 
+/**
+ * @SuppressWarnings(PHPMD.Superglobals)
+ */
 class ImageTest extends \PHPUnit\Framework\TestCase
 {
     protected ?\Magento\TestFramework\ObjectManager $objectManager;
@@ -46,9 +51,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
-     * @magentoDataFixture setFileSize
+     * @magentoDataFixture MageSuite_LazyResize::Test/Integration/_files/file_size.php
      */
-    public function testItReturnsProperUrlWhenImageIsDefined()
+    public function testItReturnsProperUrlWhenImageIsDefined(): void
     {
         $product = $this->productRepository->get('simple');
 
@@ -65,13 +70,13 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
-     * @magentoDataFixture setFileSize
+     * @magentoDataFixture MageSuite_LazyResize::Test/Integration/_files/file_size.php
      * @magentoConfigFixture current_store design/watermark/small_image_image stores/1/thumb.png
      * @magentoConfigFixture current_store design/watermark/small_image_size 200x100
      * @magentoConfigFixture current_store design/watermark/small_image_position top-right
      * @magentoConfigFixture current_store design/watermark/small_image_imageOpacity 50
      */
-    public function testItReturnsProperUrlWhenImageHasWatermark()
+    public function testItReturnsProperUrlWhenImageHasWatermark(): void
     {
         $product = $this->productRepository->get('simple');
         $url = $this->getImageUrl($product);
@@ -87,9 +92,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
-     * @magentoDataFixture setFileSize
+     * @magentoDataFixture MageSuite_LazyResize::Test/Integration/_files/file_size.php
      */
-    public function testItReturnsProperUrlWhenImageAndFileSizeIsDefined()
+    public function testItReturnsProperUrlWhenImageAndFileSizeIsDefined(): void
     {
         $product = $this->productRepository->get('simple');
 
@@ -107,9 +112,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store web/url/redirect_to_base 0
      * @magentoDataFixture Magento/Catalog/_files/product_with_image.php
-     * @magentoDataFixture setFileSize
+     * @magentoDataFixture MageSuite_LazyResize::Test/Integration/_files/file_size.php
      */
-    public function testItReturnsProperUrlWhenRequestedFromIndexPhp()
+    public function testItReturnsProperUrlWhenRequestedFromIndexPhp(): void
     {
         // Below globals are set to emulate scenario where base url contains index.php
         // because request is created based on globals \MageSuite\LazyResize\Service\ImageUrlHandler::66
@@ -132,13 +137,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
      * @param $product
      * @return string
      */
-    protected function getImageUrl($product)
+    protected function getImageUrl(\Magento\Catalog\Api\Data\ProductInterface $product): string
     {
         return $this->imageBuilder->create($product, 'category_page_grid', [])->getImageUrl();
-    }
-
-    public static function setFileSize()
-    {
-        require __DIR__ . '/../../../../_files/file_size.php';
     }
 }
