@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\LazyResize\Test\Unit\Service;
 
 class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
@@ -24,11 +26,11 @@ class TokenGeneratorTest extends \PHPUnit\Framework\TestCase
         $reflection->setStaticPropertyValue('secretToken', null);
     }
 
-    public function testItGeneratesProperToken()
+    public function testItGeneratesProperToken(): void
     {
         $this->tokenSecretProviderStub
             ->method('getTokenSecret')
-            ->willReturn(\MageSuite\LazyResize\Helper\Configuration::DEFAULT_TOKEN_SECRET);
+            ->willReturn(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::DEFAULT_TOKEN_SECRET);
 
         $result = $this->tokenGenerator->generate([
             'type' => 'small_image',
