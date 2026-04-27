@@ -38,6 +38,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->configurationStub = $this->getMockBuilder(\MageSuite\LazyResize\Helper\Configuration::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class)->prepareTokenSecretForTests();
     }
 
     public function testItReturnImagePathCorrectlyWithCorrectDirectory()
@@ -140,9 +141,5 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->configurationStub
             ->method('getOptimizationLevel')
             ->willReturn(self::OPTIMIZATION_LEVEL);
-
-        $this->configurationStub
-            ->method('getTokenSecret')
-            ->willReturn('123456789abcdefg');
     }
 }
