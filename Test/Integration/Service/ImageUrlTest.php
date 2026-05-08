@@ -13,9 +13,6 @@ class ImageUrlTest extends \PHPUnit\Framework\TestCase
 
         $this->imageUrlHandler = $objectManager->get(\MageSuite\LazyResize\Service\ImageUrlHandler::class);
         $this->watermarkConfiguration = $objectManager->get(\MageSuite\ImageResize\Model\WatermarkConfiguration::class);
-
-        $tokenSecretHelper = $objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
-        $tokenSecretHelper->prepareTokenSecretForTests();
     }
 
     /**
