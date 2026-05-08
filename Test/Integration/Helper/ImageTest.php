@@ -44,9 +44,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
         $this->imageHelper = $this->objectManager->get(\MageSuite\LazyResize\Helper\Image::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->productCollectionFactory = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory::class);
-
-        $tokenSecretHelper = $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
-        $tokenSecretHelper->prepareTokenSecretForTests();
     }
 
     /**

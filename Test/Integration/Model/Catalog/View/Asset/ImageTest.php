@@ -41,9 +41,6 @@ class ImageTest extends \PHPUnit\Framework\TestCase
 
         $this->imageBuilder = $this->objectManager->get(\Magento\Catalog\Block\Product\ImageBuilder::class);
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
-
-        $tokenSecretHelper = $this->objectManager->get(\MageSuite\LazyResize\Test\Integration\TokenSecretHelper::class);
-        $tokenSecretHelper->prepareTokenSecretForTests();
     }
 
     /**

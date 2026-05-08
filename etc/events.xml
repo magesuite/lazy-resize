@@ -1,0 +1,7 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="core_app_init_current_store_after">
+        <observer name="test_framework_regenerate_secret"
+                  instance="MageSuite\LazyResize\Test\Integration\Observer\RegenerateSecret"/>
+    </event>
+</config>
