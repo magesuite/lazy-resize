@@ -110,11 +110,10 @@ class ImageUrlHandler
 
         $configuration['width_and_height'] = $this->buildWidthAndHeight($configuration);
         $configuration['boolean_flags'] = $this->buildBooleanFlags($configuration);
-        $configuration['token'] = $tokenGenerator->generate($configuration);
-        $configuration['image_file'] = ltrim($configuration['image_file'], '/');
 
-        $urlFileParts = explode('/', $configuration['image_file']);
+        $urlFileParts = explode('/', ltrim($configuration['image_file'], '/'));
         $urlFileParts = array_combine(['first_letter', 'second_letter', 'image_file_path'], $urlFileParts);
+        $configuration['token'] = $tokenGenerator->generate($configuration);
 
         $configuration += $urlFileParts;
 
